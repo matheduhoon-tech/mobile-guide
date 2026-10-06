@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b1220" />
+  <title>모바일 무선 가이드</title>
+  <style>
+    :root { --bg:#08111f; --card:#101b2d; --line:#24334d; --text:#f7f9fc; --sub:#a9b7ca; --accent:#55d68b; --danger:#ff5e6c; --blue:#64a5ff; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:linear-gradient(160deg,#07101d,#0d1830); color:var(--text); }
+    .wrap { max-width:640px; margin:0 auto; padding:24px 18px 42px; }
+    h1 { font-size:28px; margin:8px 0 6px; }
+    .subtitle { color:var(--sub); margin-bottom:22px; }
+    .card { background:rgba(16,27,45,.94); border:1px solid var(--line); border-radius:22px; padding:20px; box-shadow:0 18px 60px rgba(0,0,0,.25); margin-bottom:16px; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; }
+    .row > * { flex:1; }
+    label { display:block; font-size:13px; color:var(--sub); margin-bottom:7px; }
+    input { width:100%; border:1px solid var(--line); background:#091423; color:var(--text); padding:14px 14px; border-radius:14px; font-size:18px; text-transform:uppercase; letter-spacing:.12em; outline:none; }
+    button, a.btn { appearance:none; border:0; border-radius:15px; padding:15px 16px; font-weight:800; font-size:16px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    button.primary { background:var(--accent); color:#06140d; }
+    button.secondary, a.btn { background:#1b2a43; color:var(--text); border:1px solid #31445f; }
+    button.danger { background:var(--danger); color:white; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .status { display:flex; align-items:center; gap:9px; padding:12px 14px; border-radius:14px; background:#091423; border:1px solid var(--line); margin:12px 0; color:var(--sub); }
+    .dot { width:10px; height:10px; border-radius:50%; background:#66758c; flex:0 0 auto; }
+    .dot.live { background:var(--danger); box-shadow:0 0 0 6px rgba(255,94,108,.13); }
+    .dot.ok { background:var(--accent); box-shadow:0 0 0 6px rgba(85,214,139,.10); }
+    .big { font-size:42px; font-weight:900; letter-spacing:.08em; text-align:center; margin:8px 0 2px; }
+    .center { text-align:center; }
+    .muted { color:var(--sub); font-size:14px; }
+    .hidden { display:none !important; }
+    .meter { height:10px; background:#091423; border-radius:99px; overflow:hidden; border:1px solid var(--line); }
+    .meter > div { height:100%; width:0%; background:var(--accent); transition:width .08s linear; }
+    .pill { display:inline-block; padding:7px 11px; border-radius:999px; background:#0b1727; border:1px solid var(--line); color:var(--sub); font-size:13px; }
+    .footer { margin-top:18px; color:#8393ab; font-size:12px; line-height:1.55; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎧 모바일 무선 가이드</h1>
+  <div class="subtitle">진행자 1명 → 여러 명 실시간 음성 테스트</div>
+
+  <div id="entry" class="card">
+    <div class="row">
+      <button id="pickHost" class="secondary">🎙️ 진행자</button>
+      <button id="pickListener" class="primary">🎧 청취자</button>
+    </div>
+    <div style="height:16px"></div>
+    <label for="room">방 코드</label>
+    <input id="room" maxlength="8" placeholder="예: TOK2026" autocomplete="off" />
+    <div style="height:12px"></div>
+    <button id="enter" class="primary" style="width:100%">입장하기</button>
+  </div>
+
+  <div id="hostPanel" class="card hidden">
+    <div class="center"><span class="pill">진행자 모드</span></div>
+    <div id="hostRoom" class="big"></div>
+    <div class="center muted">이 방 코드를 청취자에게 알려주세요.</div>
+    <div id="hostStatus" class="status"><span class="dot"></span><span>연결 준비 중</span></div>
+    <div class="meter"><div id="meterBar"></div></div>
+    <div style="height:14px"></div>
+    <div class="row">
+      <button id="startMic" class="primary">🎙️ 방송 시작</button>
+      <button id="stopMic" class="danger" disabled>■ 방송 종료</button>
+    </div>
+    <div class="center muted" style="margin-top:12px">접속 청취자 <b id="count">0</b>명</div>
+  </div>
+
+  <div id="listenerPanel" class="card hidden">
+    <div class="center"><span class="pill">청취자 모드</span></div>
+    <div id="listenerRoom" class="big"></div>
+    <div id="listenerStatus" class="status"><span class="dot"></span><span>진행자를 기다리는 중</span></div>
+    <button id="enableAudio" class="primary" style="width:100%">▶ 소리 듣기</button>
+    <audio id="remoteAudio" autoplay playsinline></audio>
+    <div class="center muted" style="margin-top:12px">이어폰 사용을 권장합니다.</div>
+  </div>
+
+  <div class="footer">
+    1차 테스트용 프로토타입입니다. 현재 방식은 진행자 휴대폰이 청취자마다 개별 WebRTC 연결을 만드는 구조라 소수 인원 테스트에 적합합니다. 실제 다수 인원 운영 전에는 SFU 방식으로 확장하는 것이 좋습니다.
+  </div>
+</div>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const qs = new URLSearchParams(location.search);
+  let role = qs.get('role') === 'host' ? 'host' : 'listener';
+  let roomCode = (qs.get('room') || '').toUpperCase();
+  let ws, iceConfig = { iceServers: [{urls:'stun:stun.l.google.com:19302'}] };
+  let localStream = null;
+  const peers = new Map();
+  let listenerPeer = null;
+  let audioCtx, analyser, meterTimer;
+
+  $('room').value = roomCode;
+  function setRole(r) {
+    role = r;
+    $('pickHost').className = r === 'host' ? 'primary' : 'secondary';
+    $('pickListener').className = r === 'listener' ? 'primary' : 'secondary';
+  }
+  setRole(role);
+  $('pickHost').onclick = () => setRole('host');
+  $('pickListener').onclick = () => setRole('listener');
+
+  function setStatus(id, text, kind='') {
+    const box = $(id); box.querySelector('span:last-child').textContent = text;
+    box.querySelector('.dot').className = 'dot ' + kind;
+  }
+
+  async function loadConfig() {
+    try { const r = await fetch('/config'); iceConfig = await r.json(); } catch {}
+  }
+
+  function signal(obj) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(obj)); }
+
+  async function connectSignal() {
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(`${proto}//${location.host}/signal`);
+    ws.onopen = () => signal({ type:'join', role, roomCode });
+    ws.onclose = () => {
+      if (role === 'host') setStatus('hostStatus','서버 연결 끊김');
+      else setStatus('listenerStatus','서버 연결 끊김');
+    };
+    ws.onmessage = async (e) => {
+      const msg = JSON.parse(e.data);
+      if (msg.type === 'joined') {
+        if (role === 'host') {
+          $('count').textContent = msg.count || 0;
+          setStatus('hostStatus', localStream ? '방송 중' : '마이크 대기 중', localStream ? 'live' : 'ok');
+        } else {
+          setStatus('listenerStatus', msg.hostOnline ? '진행자 연결 준비 중' : '진행자를 기다리는 중', msg.hostOnline ? 'ok' : '');
+        }
+      }
+      if (role === 'host') await handleHostSignal(msg);
+      else await handleListenerSignal(msg);
+    };
+  }
+
+  async function makeHostPeer(listenerId) {
+    if (!localStream) return;
+    if (peers.has(listenerId)) { try { peers.get(listenerId).close(); } catch {} }
+    const pc = new RTCPeerConnection(iceConfig);
+    peers.set(listenerId, pc);
+    localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+    pc.onicecandidate = e => e.candidate && signal({ type:'ice', targetId:listenerId, candidate:e.candidate });
+    pc.onconnectionstatechange = () => {
+      if (['failed','closed'].includes(pc.connectionState)) { peers.delete(listenerId); }
+    };
+    const offer = await pc.createOffer({ offerToReceiveAudio:false });
+    await pc.setLocalDescription(offer);
+    signal({ type:'offer', targetId:listenerId, sdp:pc.localDescription });
+  }
+
+  async function handleHostSignal(msg) {
+    if (msg.type === 'listener-joined') {
+      $('count').textContent = msg.count ?? $('count').textContent;
+      if (localStream) await makeHostPeer(msg.listenerId);
+    } else if (msg.type === 'listener-left') {
+      $('count').textContent = msg.count ?? 0;
+      const pc = peers.get(msg.listenerId); if (pc) pc.close(); peers.delete(msg.listenerId);
+    } else if (msg.type === 'answer') {
+      const pc = peers.get(msg.fromId); if (pc) await pc.setRemoteDescription(msg.sdp);
+    } else if (msg.type === 'ice') {
+      const pc = peers.get(msg.fromId); if (pc && msg.candidate) try { await pc.addIceCandidate(msg.candidate); } catch {}
+    } else if (msg.type === 'replaced') {
+      alert('다른 기기에서 같은 방의 진행자로 접속했습니다.');
+    }
+  }
+
+  async function handleListenerSignal(msg) {
+    if (msg.type === 'offer') {
+      if (listenerPeer) listenerPeer.close();
+      listenerPeer = new RTCPeerConnection(iceConfig);
+      listenerPeer.onicecandidate = e => e.candidate && signal({ type:'ice', candidate:e.candidate });
+      listenerPeer.ontrack = e => {
+        $('remoteAudio').srcObject = e.streams[0];
+        setStatus('listenerStatus','LIVE · 음성 수신 중','live');
+      };
+      listenerPeer.onconnectionstatechange = () => {
+        if (listenerPeer.connectionState === 'connected') setStatus('listenerStatus','LIVE · 연결됨','live');
+        if (['failed','disconnected'].includes(listenerPeer.connectionState)) setStatus('listenerStatus','연결 재시도 필요');
+      };
+      await listenerPeer.setRemoteDescription(msg.sdp);
+      const ans = await listenerPeer.createAnswer();
+      await listenerPeer.setLocalDescription(ans);
+      signal({ type:'answer', sdp:listenerPeer.localDescription });
+    } else if (msg.type === 'ice') {
+      if (listenerPeer && msg.candidate) try { await listenerPeer.addIceCandidate(msg.candidate); } catch {}
+    } else if (msg.type === 'host-left') {
+      setStatus('listenerStatus','진행자 방송 종료');
+      if (listenerPeer) listenerPeer.close(); listenerPeer = null;
+    } else if (msg.type === 'host-ready') {
+      setStatus('listenerStatus','진행자 연결 준비 중','ok');
+    }
+  }
+
+  async function startMeter(stream) {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const src = audioCtx.createMediaStreamSource(stream);
+      analyser = audioCtx.createAnalyser(); analyser.fftSize = 256; src.connect(analyser);
+      const data = new Uint8Array(analyser.frequencyBinCount);
+      const tick = () => {
+        analyser.getByteFrequencyData(data);
+        const avg = data.reduce((a,b)=>a+b,0)/data.length;
+        $('meterBar').style.width = Math.min(100, avg * 1.8) + '%';
+        meterTimer = requestAnimationFrame(tick);
+      }; tick();
+    } catch {}
+  }
+
+  $('startMic').onclick = async () => {
+    try {
+      localStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation:true, noiseSuppression:true, autoGainControl:true }, video:false
+      });
+      $('startMic').disabled = true; $('stopMic').disabled = false;
+      setStatus('hostStatus','LIVE · 방송 중','live');
+      startMeter(localStream);
+      // Ask all connected listeners to rejoin by server notification is not tracked client-side;
+      // they already triggered listener-joined when entering. New listeners connect automatically.
+      // Existing listeners can simply refresh if host starts after they entered.
+      signal({type:'host-started'});
+    } catch (e) {
+      alert('마이크 권한을 허용해주세요. (' + e.name + ')');
+    }
+  };
+
+  $('stopMic').onclick = () => {
+    if (localStream) localStream.getTracks().forEach(t => t.stop());
+    localStream = null;
+    for (const pc of peers.values()) pc.close(); peers.clear();
+    $('startMic').disabled = false; $('stopMic').disabled = true;
+    if (meterTimer) cancelAnimationFrame(meterTimer); $('meterBar').style.width='0%';
+    setStatus('hostStatus','방송 종료 · 다시 시작 가능','ok');
+  };
+
+  $('enableAudio').onclick = async () => {
+    try { await $('remoteAudio').play(); $('enableAudio').textContent = '🔊 소리 재생 허용됨'; $('enableAudio').disabled = true; }
+    catch { alert('브라우저에서 미디어 재생을 허용해주세요.'); }
+  };
+
+  $('enter').onclick = async () => {
+    roomCode = $('room').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
+    if (!roomCode) return alert('방 코드를 입력해주세요.');
+    await loadConfig();
+    $('entry').classList.add('hidden');
+    if (role === 'host') { $('hostPanel').classList.remove('hidden'); $('hostRoom').textContent = roomCode; }
+    else { $('listenerPanel').classList.remove('hidden'); $('listenerRoom').textContent = roomCode; }
+    history.replaceState(null,'',`?role=${role}&room=${encodeURIComponent(roomCode)}`);
+    connectSignal();
+  };
+
+  if (roomCode) $('enter').click();
+})();
+</script>
+</body>
+</html>
