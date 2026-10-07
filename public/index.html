@@ -3,43 +3,62 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b1220" />
-  <title>모바일 무선 가이드</title>
+  <meta name="theme-color" content="#0d4f9c" />
+  <title>죽산고 모바일 무선 가이드</title>
   <style>
-    :root { --bg:#08111f; --card:#101b2d; --line:#24334d; --text:#f7f9fc; --sub:#a9b7ca; --accent:#55d68b; --danger:#ff5e6c; --blue:#64a5ff; }
+    :root { --blue:#0d4f9c; --blue2:#1b74d1; --bg:#f3f7fc; --card:#fff; --line:#dbe5f0; --text:#152235; --sub:#66778c; --green:#19a66a; --red:#e54b55; --shadow:0 16px 50px rgba(16,58,105,.12); }
     * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:linear-gradient(160deg,#07101d,#0d1830); color:var(--text); }
-    .wrap { max-width:640px; margin:0 auto; padding:24px 18px 42px; }
-    h1 { font-size:28px; margin:8px 0 6px; }
-    .subtitle { color:var(--sub); margin-bottom:22px; }
-    .card { background:rgba(16,27,45,.94); border:1px solid var(--line); border-radius:22px; padding:20px; box-shadow:0 18px 60px rgba(0,0,0,.25); margin-bottom:16px; }
+    html,body { margin:0; min-height:100%; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:linear-gradient(180deg,#eaf3ff 0,#f7f9fc 42%,#eef3f8 100%); }
+    .wrap { max-width:650px; margin:0 auto; padding:20px 16px 44px; }
+    .brand { display:flex; align-items:center; gap:14px; padding:10px 4px 22px; }
+    .logoWrap { width:64px; height:64px; border-radius:50%; background:#fff; box-shadow:0 8px 28px rgba(13,79,156,.16); display:grid; place-items:center; overflow:hidden; border:1px solid #dbe8f5; flex:none; }
+    .logoWrap img { width:100%; height:100%; object-fit:contain; padding:5px; }
+    .logoFallback { font-weight:900; color:var(--blue); font-size:18px; }
+    h1 { margin:0; font-size:27px; letter-spacing:-.03em; }
+    .subtitle { margin-top:5px; color:var(--sub); font-size:14px; }
+    .card { background:rgba(255,255,255,.96); border:1px solid var(--line); border-radius:24px; padding:20px; box-shadow:var(--shadow); margin-bottom:16px; }
     .row { display:flex; gap:10px; flex-wrap:wrap; }
-    .row > * { flex:1; }
-    label { display:block; font-size:13px; color:var(--sub); margin-bottom:7px; }
-    input { width:100%; border:1px solid var(--line); background:#091423; color:var(--text); padding:14px 14px; border-radius:14px; font-size:18px; text-transform:uppercase; letter-spacing:.12em; outline:none; }
-    button, a.btn { appearance:none; border:0; border-radius:15px; padding:15px 16px; font-weight:800; font-size:16px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
-    button.primary { background:var(--accent); color:#06140d; }
-    button.secondary, a.btn { background:#1b2a43; color:var(--text); border:1px solid #31445f; }
-    button.danger { background:var(--danger); color:white; }
+    .row > * { flex:1; min-width:0; }
+    label { display:block; font-size:13px; color:var(--sub); margin:0 0 7px; font-weight:700; }
+    input { width:100%; border:1px solid #cbd9e8; background:#f8fbff; color:var(--text); padding:14px; border-radius:14px; font-size:18px; text-transform:uppercase; letter-spacing:.12em; outline:none; }
+    input:focus { border-color:var(--blue2); box-shadow:0 0 0 4px rgba(27,116,209,.10); }
+    button { appearance:none; border:0; border-radius:15px; padding:15px 16px; font-weight:800; font-size:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    button.primary { background:linear-gradient(135deg,var(--blue),var(--blue2)); color:#fff; }
+    button.secondary { background:#edf4fb; color:#24415f; border:1px solid #d2e0ee; }
+    button.good { background:#e7f8f0; color:#087847; border:1px solid #bfe9d5; }
+    button.danger { background:var(--red); color:#fff; }
     button:disabled { opacity:.45; cursor:not-allowed; }
-    .status { display:flex; align-items:center; gap:9px; padding:12px 14px; border-radius:14px; background:#091423; border:1px solid var(--line); margin:12px 0; color:var(--sub); }
-    .dot { width:10px; height:10px; border-radius:50%; background:#66758c; flex:0 0 auto; }
-    .dot.live { background:var(--danger); box-shadow:0 0 0 6px rgba(255,94,108,.13); }
-    .dot.ok { background:var(--accent); box-shadow:0 0 0 6px rgba(85,214,139,.10); }
-    .big { font-size:42px; font-weight:900; letter-spacing:.08em; text-align:center; margin:8px 0 2px; }
+    .status { display:flex; align-items:center; gap:9px; padding:12px 14px; border-radius:14px; background:#f7faff; border:1px solid var(--line); margin:12px 0; color:var(--sub); }
+    .dot { width:10px; height:10px; border-radius:50%; background:#8a9caf; flex:none; }
+    .dot.live { background:var(--red); box-shadow:0 0 0 6px rgba(229,75,85,.12); }
+    .dot.ok { background:var(--green); box-shadow:0 0 0 6px rgba(25,166,106,.10); }
+    .big { font-size:40px; font-weight:900; letter-spacing:.08em; text-align:center; margin:10px 0 2px; color:var(--blue); }
     .center { text-align:center; }
     .muted { color:var(--sub); font-size:14px; }
     .hidden { display:none !important; }
-    .meter { height:10px; background:#091423; border-radius:99px; overflow:hidden; border:1px solid var(--line); }
-    .meter > div { height:100%; width:0%; background:var(--accent); transition:width .08s linear; }
-    .pill { display:inline-block; padding:7px 11px; border-radius:999px; background:#0b1727; border:1px solid var(--line); color:var(--sub); font-size:13px; }
-    .footer { margin-top:18px; color:#8393ab; font-size:12px; line-height:1.55; }
+    .meter { height:10px; background:#edf2f7; border-radius:99px; overflow:hidden; border:1px solid var(--line); }
+    .meter > div { height:100%; width:0%; background:linear-gradient(90deg,#22b67a,#55d09b); transition:width .08s linear; }
+    .pill { display:inline-block; padding:7px 11px; border-radius:999px; background:#edf4fb; border:1px solid #d4e1ef; color:#365674; font-size:13px; font-weight:800; }
+    .counts { display:flex; gap:8px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+    .countChip { border:1px solid #d7e3ef; border-radius:999px; padding:7px 11px; background:#f8fbff; color:#52677d; font-size:13px; }
+    .notice { margin-top:12px; padding:12px 13px; border-radius:14px; background:#fff9e9; border:1px solid #f2df9e; color:#735d11; font-size:13px; line-height:1.5; }
+    .footer { margin-top:18px; color:#7d8ca0; font-size:12px; line-height:1.55; text-align:center; }
+    .wakeActive { background:#e7f8f0 !important; color:#087847 !important; border-color:#bfe9d5 !important; }
+    audio { width:100%; }
   </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>🎧 모바일 무선 가이드</h1>
-  <div class="subtitle">진행자 1명 → 여러 명 실시간 음성 테스트</div>
+  <div class="brand">
+    <div class="logoWrap">
+      <img id="schoolLogo" src="school-logo.png" alt="죽산고등학교 마크" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'" />
+      <span id="logoFallback" class="logoFallback" style="display:none">죽산</span>
+    </div>
+    <div>
+      <h1>죽산고 모바일 무선 가이드</h1>
+      <div class="subtitle">여러 진행자 · 실시간 음성 · 이동형 안내</div>
+    </div>
+  </div>
 
   <div id="entry" class="card">
     <div class="row">
@@ -56,7 +75,7 @@
   <div id="hostPanel" class="card hidden">
     <div class="center"><span class="pill">진행자 모드</span></div>
     <div id="hostRoom" class="big"></div>
-    <div class="center muted">이 방 코드를 청취자에게 알려주세요.</div>
+    <div class="center muted">같은 방 코드로 여러 진행자가 함께 들어올 수 있습니다.</div>
     <div id="hostStatus" class="status"><span class="dot"></span><span>연결 준비 중</span></div>
     <div class="meter"><div id="meterBar"></div></div>
     <div style="height:14px"></div>
@@ -64,7 +83,13 @@
       <button id="startMic" class="primary">🎙️ 방송 시작</button>
       <button id="stopMic" class="danger" disabled>■ 방송 종료</button>
     </div>
-    <div class="center muted" style="margin-top:12px">접속 청취자 <b id="count">0</b>명</div>
+    <div style="height:10px"></div>
+    <button id="wakeBtn" class="secondary" style="width:100%">☀️ 화면 꺼짐 방지 켜기</button>
+    <div class="counts">
+      <span class="countChip">진행자 <b id="hostCount">0</b>명</span>
+      <span class="countChip">청취자 <b id="listenerCount">0</b>명</span>
+    </div>
+    <div class="notice">진행자가 여러 명이면 동시에 말할 수도 있습니다. 실제 안내에서는 한 번에 한 명씩 말하면 가장 깔끔하게 들립니다. 화면 꺼짐 방지는 지원 브라우저에서만 동작합니다.</div>
   </div>
 
   <div id="listenerPanel" class="card hidden">
@@ -72,13 +97,15 @@
     <div id="listenerRoom" class="big"></div>
     <div id="listenerStatus" class="status"><span class="dot"></span><span>진행자를 기다리는 중</span></div>
     <button id="enableAudio" class="primary" style="width:100%">▶ 소리 듣기</button>
-    <audio id="remoteAudio" autoplay playsinline></audio>
-    <div class="center muted" style="margin-top:12px">이어폰 사용을 권장합니다.</div>
+    <div id="audioContainer"></div>
+    <div class="counts">
+      <span class="countChip">진행자 <b id="listenerHostCount">0</b>명</span>
+      <span class="countChip">청취자 <b id="listenerListenerCount">0</b>명</span>
+    </div>
+    <div class="center muted" style="margin-top:12px">이어폰 사용을 권장합니다. 다른 앱으로 이동하거나 화면 잠금 시에는 휴대폰 OS 정책에 따라 재생이 제한될 수 있습니다.</div>
   </div>
 
-  <div class="footer">
-    1차 테스트용 프로토타입입니다. 현재 방식은 진행자 휴대폰이 청취자마다 개별 WebRTC 연결을 만드는 구조라 소수 인원 테스트에 적합합니다. 실제 다수 인원 운영 전에는 SFU 방식으로 확장하는 것이 좋습니다.
-  </div>
+  <div class="footer">V2 · 자동 재연결 / 여러 진행자 / 화면 꺼짐 방지 / 모바일 백그라운드 재생 보조</div>
 </div>
 <script>
 (() => {
@@ -86,11 +113,14 @@
   const qs = new URLSearchParams(location.search);
   let role = qs.get('role') === 'host' ? 'host' : 'listener';
   let roomCode = (qs.get('room') || '').toUpperCase();
-  let ws, iceConfig = { iceServers: [{urls:'stun:stun.l.google.com:19302'}] };
+  let ws, reconnectTimer = null, shouldReconnect = true;
+  let iceConfig = { iceServers: [{urls:'stun:stun.l.google.com:19302'}] };
   let localStream = null;
-  const peers = new Map();
-  let listenerPeer = null;
-  let audioCtx, analyser, meterTimer;
+  const hostPeers = new Map();       // host: listenerId -> RTCPeerConnection
+  const listenerPeers = new Map();   // listener: hostId -> RTCPeerConnection
+  const remoteAudios = new Map();    // listener: hostId -> audio
+  let audioCtx, analyser, meterTimer, wakeLock = null;
+  let audioEnabled = false;
 
   $('room').value = roomCode;
   function setRole(r) {
@@ -106,31 +136,49 @@
     const box = $(id); box.querySelector('span:last-child').textContent = text;
     box.querySelector('.dot').className = 'dot ' + kind;
   }
-
-  async function loadConfig() {
-    try { const r = await fetch('/config'); iceConfig = await r.json(); } catch {}
+  function setCounts(hosts, listeners) {
+    $('hostCount').textContent = hosts ?? 0;
+    $('listenerCount').textContent = listeners ?? 0;
+    $('listenerHostCount').textContent = hosts ?? 0;
+    $('listenerListenerCount').textContent = listeners ?? 0;
   }
+  async function loadConfig() {
+    try { const r = await fetch('/config', {cache:'no-store'}); iceConfig = await r.json(); } catch {}
+  }
+  function signal(obj) { if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj)); }
 
-  function signal(obj) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(obj)); }
-
-  async function connectSignal() {
+  function scheduleReconnect() {
+    if (!shouldReconnect || reconnectTimer) return;
+    reconnectTimer = setTimeout(() => { reconnectTimer = null; connectSignal(); }, 1500);
+  }
+  function connectSignal() {
+    if (!roomCode) return;
     const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    try { if (ws) ws.close(); } catch {}
     ws = new WebSocket(`${proto}//${location.host}/signal`);
-    ws.onopen = () => signal({ type:'join', role, roomCode });
-    ws.onclose = () => {
-      if (role === 'host') setStatus('hostStatus','서버 연결 끊김');
-      else setStatus('listenerStatus','서버 연결 끊김');
+    ws.onopen = () => {
+      signal({ type:'join', role, roomCode });
+      if (role === 'host') setStatus('hostStatus', localStream ? 'LIVE · 재연결됨' : '서버 연결됨', localStream ? 'live' : 'ok');
+      else setStatus('listenerStatus','서버 연결됨 · 진행자 연결 중','ok');
     };
+    ws.onclose = () => {
+      if (role === 'host') setStatus('hostStatus','연결 끊김 · 자동 재연결 중');
+      else setStatus('listenerStatus','연결 끊김 · 자동 재연결 중');
+      scheduleReconnect();
+    };
+    ws.onerror = () => {};
     ws.onmessage = async (e) => {
       const msg = JSON.parse(e.data);
       if (msg.type === 'joined') {
+        setCounts(msg.hostCount, msg.listenerCount);
         if (role === 'host') {
-          $('count').textContent = msg.count || 0;
-          setStatus('hostStatus', localStream ? '방송 중' : '마이크 대기 중', localStream ? 'live' : 'ok');
+          setStatus('hostStatus', localStream ? 'LIVE · 방송 중' : '마이크 대기 중', localStream ? 'live' : 'ok');
+          if (localStream) signal({type:'host-started'});
         } else {
-          setStatus('listenerStatus', msg.hostOnline ? '진행자 연결 준비 중' : '진행자를 기다리는 중', msg.hostOnline ? 'ok' : '');
+          setStatus('listenerStatus', msg.hostCount ? '진행자 연결 준비 중' : '진행자를 기다리는 중', msg.hostCount ? 'ok' : '');
         }
       }
+      if (msg.type === 'room-counts') setCounts(msg.hostCount, msg.listenerCount);
       if (role === 'host') await handleHostSignal(msg);
       else await handleListenerSignal(msg);
     };
@@ -138,57 +186,67 @@
 
   async function makeHostPeer(listenerId) {
     if (!localStream) return;
-    if (peers.has(listenerId)) { try { peers.get(listenerId).close(); } catch {} }
+    if (hostPeers.has(listenerId)) { try { hostPeers.get(listenerId).close(); } catch {} }
     const pc = new RTCPeerConnection(iceConfig);
-    peers.set(listenerId, pc);
+    hostPeers.set(listenerId, pc);
     localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
     pc.onicecandidate = e => e.candidate && signal({ type:'ice', targetId:listenerId, candidate:e.candidate });
     pc.onconnectionstatechange = () => {
-      if (['failed','closed'].includes(pc.connectionState)) { peers.delete(listenerId); }
+      if (['failed','closed'].includes(pc.connectionState)) hostPeers.delete(listenerId);
     };
     const offer = await pc.createOffer({ offerToReceiveAudio:false });
     await pc.setLocalDescription(offer);
     signal({ type:'offer', targetId:listenerId, sdp:pc.localDescription });
   }
-
   async function handleHostSignal(msg) {
     if (msg.type === 'listener-joined') {
-      $('count').textContent = msg.count ?? $('count').textContent;
       if (localStream) await makeHostPeer(msg.listenerId);
     } else if (msg.type === 'listener-left') {
-      $('count').textContent = msg.count ?? 0;
-      const pc = peers.get(msg.listenerId); if (pc) pc.close(); peers.delete(msg.listenerId);
+      const pc = hostPeers.get(msg.listenerId); if (pc) pc.close(); hostPeers.delete(msg.listenerId);
     } else if (msg.type === 'answer') {
-      const pc = peers.get(msg.fromId); if (pc) await pc.setRemoteDescription(msg.sdp);
+      const pc = hostPeers.get(msg.fromId); if (pc) await pc.setRemoteDescription(msg.sdp);
     } else if (msg.type === 'ice') {
-      const pc = peers.get(msg.fromId); if (pc && msg.candidate) try { await pc.addIceCandidate(msg.candidate); } catch {}
-    } else if (msg.type === 'replaced') {
-      alert('다른 기기에서 같은 방의 진행자로 접속했습니다.');
+      const pc = hostPeers.get(msg.fromId); if (pc && msg.candidate) try { await pc.addIceCandidate(msg.candidate); } catch {}
     }
   }
 
+  function getOrCreateAudio(hostId) {
+    if (remoteAudios.has(hostId)) return remoteAudios.get(hostId);
+    const audio = document.createElement('audio');
+    audio.autoplay = true; audio.playsInline = true; audio.controls = false;
+    audio.dataset.hostId = hostId;
+    $('audioContainer').appendChild(audio);
+    remoteAudios.set(hostId, audio);
+    return audio;
+  }
   async function handleListenerSignal(msg) {
     if (msg.type === 'offer') {
-      if (listenerPeer) listenerPeer.close();
-      listenerPeer = new RTCPeerConnection(iceConfig);
-      listenerPeer.onicecandidate = e => e.candidate && signal({ type:'ice', candidate:e.candidate });
-      listenerPeer.ontrack = e => {
-        $('remoteAudio').srcObject = e.streams[0];
+      const hostId = msg.fromId;
+      if (listenerPeers.has(hostId)) try { listenerPeers.get(hostId).close(); } catch {}
+      const pc = new RTCPeerConnection(iceConfig);
+      listenerPeers.set(hostId, pc);
+      pc.onicecandidate = e => e.candidate && signal({ type:'ice', targetId:hostId, candidate:e.candidate });
+      pc.ontrack = async e => {
+        const audio = getOrCreateAudio(hostId);
+        audio.srcObject = e.streams[0];
+        if (audioEnabled) try { await audio.play(); } catch {}
         setStatus('listenerStatus','LIVE · 음성 수신 중','live');
       };
-      listenerPeer.onconnectionstatechange = () => {
-        if (listenerPeer.connectionState === 'connected') setStatus('listenerStatus','LIVE · 연결됨','live');
-        if (['failed','disconnected'].includes(listenerPeer.connectionState)) setStatus('listenerStatus','연결 재시도 필요');
+      pc.onconnectionstatechange = () => {
+        if (pc.connectionState === 'connected') setStatus('listenerStatus','LIVE · 연결됨','live');
+        if (['failed','disconnected'].includes(pc.connectionState)) setStatus('listenerStatus','연결 재시도 중','ok');
       };
-      await listenerPeer.setRemoteDescription(msg.sdp);
-      const ans = await listenerPeer.createAnswer();
-      await listenerPeer.setLocalDescription(ans);
-      signal({ type:'answer', sdp:listenerPeer.localDescription });
+      await pc.setRemoteDescription(msg.sdp);
+      const ans = await pc.createAnswer();
+      await pc.setLocalDescription(ans);
+      signal({ type:'answer', targetId:hostId, sdp:pc.localDescription });
     } else if (msg.type === 'ice') {
-      if (listenerPeer && msg.candidate) try { await listenerPeer.addIceCandidate(msg.candidate); } catch {}
+      const pc = listenerPeers.get(msg.fromId);
+      if (pc && msg.candidate) try { await pc.addIceCandidate(msg.candidate); } catch {}
     } else if (msg.type === 'host-left') {
-      setStatus('listenerStatus','진행자 방송 종료');
-      if (listenerPeer) listenerPeer.close(); listenerPeer = null;
+      const pc = listenerPeers.get(msg.hostId); if (pc) pc.close(); listenerPeers.delete(msg.hostId);
+      const audio = remoteAudios.get(msg.hostId); if (audio) audio.remove(); remoteAudios.delete(msg.hostId);
+      if (listenerPeers.size === 0) setStatus('listenerStatus','진행자를 기다리는 중');
     } else if (msg.type === 'host-ready') {
       setStatus('listenerStatus','진행자 연결 준비 중','ok');
     }
@@ -208,6 +266,32 @@
       }; tick();
     } catch {}
   }
+  async function requestWakeLock() {
+    if (!('wakeLock' in navigator)) {
+      alert('이 브라우저는 화면 꺼짐 방지 기능을 지원하지 않습니다.');
+      return;
+    }
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      $('wakeBtn').textContent = '✅ 화면 꺼짐 방지 사용 중';
+      $('wakeBtn').classList.add('wakeActive');
+      wakeLock.addEventListener('release', () => {
+        wakeLock = null;
+        $('wakeBtn').textContent = '☀️ 화면 꺼짐 방지 켜기';
+        $('wakeBtn').classList.remove('wakeActive');
+      });
+    } catch (e) { alert('화면 꺼짐 방지를 켤 수 없습니다.'); }
+  }
+  $('wakeBtn').onclick = async () => {
+    if (wakeLock) { try { await wakeLock.release(); } catch {} }
+    else await requestWakeLock();
+  };
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible') {
+      if (role === 'host' && localStream && !wakeLock && 'wakeLock' in navigator) try { await requestWakeLock(); } catch {}
+      if (role === 'listener' && audioEnabled) for (const a of remoteAudios.values()) try { await a.play(); } catch {}
+    }
+  });
 
   $('startMic').onclick = async () => {
     try {
@@ -217,27 +301,30 @@
       $('startMic').disabled = true; $('stopMic').disabled = false;
       setStatus('hostStatus','LIVE · 방송 중','live');
       startMeter(localStream);
-      // Ask all connected listeners to rejoin by server notification is not tracked client-side;
-      // they already triggered listener-joined when entering. New listeners connect automatically.
-      // Existing listeners can simply refresh if host starts after they entered.
       signal({type:'host-started'});
+      if ('wakeLock' in navigator && !wakeLock) try { await requestWakeLock(); } catch {}
     } catch (e) {
       alert('마이크 권한을 허용해주세요. (' + e.name + ')');
     }
   };
-
   $('stopMic').onclick = () => {
     if (localStream) localStream.getTracks().forEach(t => t.stop());
     localStream = null;
-    for (const pc of peers.values()) pc.close(); peers.clear();
+    for (const pc of hostPeers.values()) pc.close(); hostPeers.clear();
     $('startMic').disabled = false; $('stopMic').disabled = true;
     if (meterTimer) cancelAnimationFrame(meterTimer); $('meterBar').style.width='0%';
     setStatus('hostStatus','방송 종료 · 다시 시작 가능','ok');
   };
 
   $('enableAudio').onclick = async () => {
-    try { await $('remoteAudio').play(); $('enableAudio').textContent = '🔊 소리 재생 허용됨'; $('enableAudio').disabled = true; }
-    catch { alert('브라우저에서 미디어 재생을 허용해주세요.'); }
+    audioEnabled = true;
+    try {
+      for (const audio of remoteAudios.values()) await audio.play();
+      $('enableAudio').textContent = '🔊 소리 재생 허용됨'; $('enableAudio').disabled = true;
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({ title:'죽산고 모바일 무선 가이드', artist:'실시간 안내 방송' });
+      }
+    } catch { alert('브라우저에서 미디어 재생을 허용해주세요.'); }
   };
 
   $('enter').onclick = async () => {
@@ -251,6 +338,8 @@
     connectSignal();
   };
 
+  window.addEventListener('online', scheduleReconnect);
+  window.addEventListener('beforeunload', () => { shouldReconnect = false; });
   if (roomCode) $('enter').click();
 })();
 </script>
