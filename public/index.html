@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0d4f9c" />
-  <title>죽산고 모바일 무선 가이드</title>
+  <title>죽산중고등학교 모바일 무선가이드</title>
   <style>
     :root { --blue:#0d4f9c; --blue2:#1b74d1; --bg:#f3f7fc; --card:#fff; --line:#dbe5f0; --text:#152235; --sub:#66778c; --green:#19a66a; --red:#e54b55; --shadow:0 16px 50px rgba(16,58,105,.12); }
     * { box-sizing:border-box; }
@@ -51,11 +51,11 @@
 <div class="wrap">
   <div class="brand">
     <div class="logoWrap">
-      <img id="schoolLogo" src="school-logo.png" alt="죽산고등학교 마크" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'" />
+      <img id="schoolLogo" src="school-logo.png" alt="죽산중고등학교 마크" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'" />
       <span id="logoFallback" class="logoFallback" style="display:none">죽산</span>
     </div>
     <div>
-      <h1>죽산고 모바일 무선 가이드</h1>
+      <h1>죽산중고등학교 모바일 무선가이드</h1>
       <div class="subtitle">여러 진행자 · 실시간 음성 · 이동형 안내</div>
     </div>
   </div>
@@ -322,7 +322,7 @@
       for (const audio of remoteAudios.values()) await audio.play();
       $('enableAudio').textContent = '🔊 소리 재생 허용됨'; $('enableAudio').disabled = true;
       if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({ title:'죽산고 모바일 무선 가이드', artist:'실시간 안내 방송' });
+        navigator.mediaSession.metadata = new MediaMetadata({ title:'죽산중고등학교 모바일 무선가이드', artist:'실시간 안내 방송' });
       }
     } catch { alert('브라우저에서 미디어 재생을 허용해주세요.'); }
   };
