@@ -45,6 +45,19 @@
     .footer { margin-top:18px; color:#7d8ca0; font-size:12px; line-height:1.55; text-align:center; }
     .wakeActive { background:#e7f8f0 !important; color:#087847 !important; border-color:#bfe9d5 !important; }
     audio { width:100%; }
+    textarea { width:100%; min-height:96px; resize:vertical; border:1px solid #cbd9e8; background:#f8fbff; color:var(--text); padding:13px 14px; border-radius:14px; font-size:16px; line-height:1.5; outline:none; font-family:inherit; }
+    textarea:focus { border-color:var(--blue2); box-shadow:0 0 0 4px rgba(27,116,209,.10); }
+    .questionBox { margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
+    .questionTitle { font-size:17px; font-weight:900; margin:0 0 10px; }
+    .questionList { display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+    .questionItem { border:1px solid #d7e3ef; background:#f8fbff; border-radius:16px; padding:13px 14px; }
+    .questionItem.new { border-color:#9bc7f5; background:#f1f7ff; }
+    .questionMeta { display:flex; justify-content:space-between; gap:10px; color:var(--sub); font-size:12px; margin-bottom:6px; }
+    .questionText { font-size:15px; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+    .questionActions { display:flex; gap:8px; margin-top:10px; }
+    .questionActions button { padding:8px 10px; font-size:12px; border-radius:10px; }
+    .questionEmpty { color:var(--sub); font-size:13px; text-align:center; padding:12px 0 2px; }
+    .sendNote { margin-top:8px; min-height:20px; color:var(--green); font-size:13px; font-weight:700; }
   </style>
 </head>
 <body>
@@ -88,6 +101,12 @@
     <div class="counts">
       <span class="countChip">진행자 <b id="hostCount">0</b>명</span>
       <span class="countChip">청취자 <b id="listenerCount">0</b>명</span>
+      <span class="countChip">질문 <b id="questionCount">0</b>개</span>
+    </div>
+    <div class="questionBox">
+      <div class="questionTitle">💬 실시간 질문</div>
+      <div class="muted">청취자가 보낸 질문이 이곳에 즉시 표시됩니다.</div>
+      <div id="questionList" class="questionList"><div id="questionEmpty" class="questionEmpty">아직 질문이 없습니다.</div></div>
     </div>
     <div class="notice">진행자가 여러 명이면 동시에 말할 수도 있습니다. 실제 안내에서는 한 번에 한 명씩 말하면 가장 깔끔하게 들립니다. 화면 꺼짐 방지는 지원 브라우저에서만 동작합니다.</div>
   </div>
@@ -102,10 +121,21 @@
       <span class="countChip">진행자 <b id="listenerHostCount">0</b>명</span>
       <span class="countChip">청취자 <b id="listenerListenerCount">0</b>명</span>
     </div>
+    <div class="questionBox">
+      <div class="questionTitle">💬 진행자에게 질문하기</div>
+      <label for="questionName">이름 <span style="font-weight:500">(선택)</span></label>
+      <input id="questionName" maxlength="20" placeholder="익명으로 보내려면 비워두세요" style="text-transform:none;letter-spacing:0;font-size:15px" />
+      <div style="height:10px"></div>
+      <label for="questionText">질문</label>
+      <textarea id="questionText" maxlength="300" placeholder="궁금한 내용을 적어주세요."></textarea>
+      <div style="height:10px"></div>
+      <button id="sendQuestion" class="secondary" style="width:100%">💬 질문 보내기</button>
+      <div id="questionSent" class="sendNote"></div>
+    </div>
     <div class="center muted" style="margin-top:12px">이어폰 사용을 권장합니다. 다른 앱으로 이동하거나 화면 잠금 시에는 휴대폰 OS 정책에 따라 재생이 제한될 수 있습니다.</div>
   </div>
 
-  <div class="footer">V2 · 자동 재연결 / 여러 진행자 / 화면 꺼짐 방지 / 모바일 백그라운드 재생 보조</div>
+  <div class="footer">V3 · 실시간 질문 / 자동 재연결 / 여러 진행자 / 화면 꺼짐 방지</div>
 </div>
 <script>
 (() => {
@@ -121,6 +151,36 @@
   const remoteAudios = new Map();    // listener: hostId -> audio
   let audioCtx, analyser, meterTimer, wakeLock = null;
   let audioEnabled = false;
+  let questionSeq = 0;
+  const questions = new Map();
+
+  function escapeText(v) { return String(v ?? ''); }
+  function addQuestion(msg) {
+    const id = msg.questionId || `q${Date.now()}-${++questionSeq}`;
+    if (questions.has(id)) return;
+    const item = { id, name: (msg.name || '익명').slice(0,20), text: (msg.text || '').slice(0,300), at: msg.at || Date.now() };
+    if (!item.text.trim()) return;
+    questions.set(id, item);
+    const empty = $('questionEmpty'); if (empty) empty.remove();
+    const box = document.createElement('div');
+    box.className = 'questionItem new';
+    box.dataset.questionId = id;
+    const meta = document.createElement('div'); meta.className = 'questionMeta';
+    const who = document.createElement('span'); who.textContent = `👤 ${item.name}`;
+    const time = document.createElement('span'); time.textContent = new Date(item.at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+    meta.append(who,time);
+    const text = document.createElement('div'); text.className = 'questionText'; text.textContent = item.text;
+    const actions = document.createElement('div'); actions.className = 'questionActions';
+    const done = document.createElement('button'); done.className = 'good'; done.textContent = '✓ 답변 완료';
+    done.onclick = () => { box.classList.remove('new'); box.style.opacity='.62'; done.disabled=true; done.textContent='답변 완료'; };
+    const remove = document.createElement('button'); remove.className='secondary'; remove.textContent='삭제';
+    remove.onclick = () => { questions.delete(id); box.remove(); $('questionCount').textContent = questions.size; if (!questions.size) $('questionList').innerHTML='<div id="questionEmpty" class="questionEmpty">아직 질문이 없습니다.</div>'; };
+    actions.append(done,remove);
+    box.append(meta,text,actions);
+    $('questionList').prepend(box);
+    $('questionCount').textContent = questions.size;
+    try { if (navigator.vibrate) navigator.vibrate(80); } catch {}
+  }
 
   $('room').value = roomCode;
   function setRole(r) {
@@ -199,7 +259,9 @@
     signal({ type:'offer', targetId:listenerId, sdp:pc.localDescription });
   }
   async function handleHostSignal(msg) {
-    if (msg.type === 'listener-joined') {
+    if (msg.type === 'question') {
+      addQuestion(msg);
+    } else if (msg.type === 'listener-joined') {
       if (localStream) await makeHostPeer(msg.listenerId);
     } else if (msg.type === 'listener-left') {
       const pc = hostPeers.get(msg.listenerId); if (pc) pc.close(); hostPeers.delete(msg.listenerId);
@@ -325,6 +387,19 @@
         navigator.mediaSession.metadata = new MediaMetadata({ title:'죽산중고등학교 모바일 무선가이드', artist:'실시간 안내 방송' });
       }
     } catch { alert('브라우저에서 미디어 재생을 허용해주세요.'); }
+  };
+
+
+  $('sendQuestion').onclick = () => {
+    const text = $('questionText').value.trim();
+    const name = $('questionName').value.trim();
+    if (!text) return alert('질문 내용을 입력해주세요.');
+    if (!ws || ws.readyState !== WebSocket.OPEN) return alert('서버에 연결된 뒤 다시 보내주세요.');
+    const questionId = `q-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+    signal({ type:'question', questionId, name: name || '익명', text, at:Date.now() });
+    $('questionText').value = '';
+    $('questionSent').textContent = '✅ 질문을 진행자에게 보냈습니다.';
+    setTimeout(() => { if ($('questionSent')) $('questionSent').textContent=''; }, 2600);
   };
 
   $('enter').onclick = async () => {
