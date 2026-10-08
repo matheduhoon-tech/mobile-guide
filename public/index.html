@@ -58,18 +58,81 @@
     .questionActions button { padding:8px 10px; font-size:12px; border-radius:10px; }
     .questionEmpty { color:var(--sub); font-size:13px; text-align:center; padding:12px 0 2px; }
     .sendNote { margin-top:8px; min-height:20px; color:var(--green); font-size:13px; font-weight:700; }
+  
+    /* V5 branding: school crest + title + IB logo */
+    .brandThree {
+      display:grid;
+      grid-template-columns:86px minmax(0,1fr) 86px;
+      align-items:center;
+      gap:14px;
+      padding:12px 2px 24px;
+    }
+    .brandText { text-align:center; min-width:0; }
+    .brandText h1 { margin:0; font-size:30px; line-height:1.12; letter-spacing:-.04em; }
+    .guideTitle { margin-top:4px; font-size:24px; line-height:1.16; font-weight:900; letter-spacing:-.035em; color:var(--text); }
+    .brandText .subtitle { margin-top:10px; font-size:14px; line-height:1.35; }
+    .sideLogo {
+      width:86px;
+      height:86px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:transparent;
+      border:0;
+      box-shadow:none;
+      overflow:visible;
+      flex:none;
+    }
+    .sideLogo img {
+      display:block;
+      max-width:100%;
+      max-height:100%;
+      width:auto;
+      height:auto;
+      object-fit:contain;
+      background:transparent;
+      border:0;
+      box-shadow:none;
+    }
+    /* The school crest source is JPG with a white background.
+       Multiply visually removes most white on the pale-blue page. */
+    .schoolSide img { mix-blend-mode:multiply; }
+    .ibSide img { width:82px; height:82px; }
+    @media (max-width:520px) {
+      .wrap { padding-left:14px; padding-right:14px; }
+      .brandThree { grid-template-columns:68px minmax(0,1fr) 68px; gap:8px; }
+      .sideLogo { width:68px; height:68px; }
+      .ibSide img { width:66px; height:66px; }
+      .brandText h1 { font-size:24px; }
+      .guideTitle { font-size:20px; }
+      .brandText .subtitle { font-size:12px; }
+    }
+    @media (max-width:390px) {
+      .brandThree { grid-template-columns:58px minmax(0,1fr) 58px; gap:6px; }
+      .sideLogo { width:58px; height:58px; }
+      .ibSide img { width:56px; height:56px; }
+      .brandText h1 { font-size:22px; }
+      .guideTitle { font-size:18px; }
+      .brandText .subtitle { font-size:11px; }
+    }
+
   </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brand">
-    <div class="logoWrap">
-      <img id="schoolLogo" src="school-logo.png" alt="죽산중고등학교 마크" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'" />
+  <div class="brand brandThree">
+    <div class="sideLogo schoolSide">
+      <img id="schoolLogo" src="school-logo.jpg" alt="죽산중고등학교 교표"
+           onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'" />
       <span id="logoFallback" class="logoFallback" style="display:none">죽산</span>
     </div>
-    <div>
-      <h1>죽산중고등학교 모바일 무선가이드</h1>
+    <div class="brandText">
+      <h1>죽산중고등학교</h1>
+      <div class="guideTitle">모바일 무선 가이드</div>
       <div class="subtitle">다중 진행자 동시 음성 · 실시간 질문 · 이동형 안내</div>
+    </div>
+    <div class="sideLogo ibSide">
+      <img id="ibLogo" src="ib-logo.png" alt="IB World School" />
     </div>
   </div>
 
@@ -79,8 +142,8 @@
       <button id="pickListener" class="primary">🎧 청취자</button>
     </div>
     <div style="height:16px"></div>
-    <label for="room">방 코드</label>
-    <input id="room" maxlength="8" placeholder="예: TOK2026" autocomplete="off" />
+    <label for="room">입장 코드</label>
+    <input id="room" maxlength="8" placeholder="예: JIWS1954" autocomplete="off" />
     <div style="height:12px"></div>
     <button id="enter" class="primary" style="width:100%">입장하기</button>
   </div>
@@ -449,7 +512,7 @@
 
   $('enter').onclick = async () => {
     roomCode = $('room').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
-    if (!roomCode) return alert('방 코드를 입력해주세요.');
+    if (!roomCode) return alert('입장 코드를 입력해주세요.');
     await loadConfig(); $('entry').classList.add('hidden');
     if (role === 'host') { $('hostPanel').classList.remove('hidden'); $('hostRoom').textContent = roomCode; }
     else { $('listenerPanel').classList.remove('hidden'); $('listenerRoom').textContent = roomCode; }
