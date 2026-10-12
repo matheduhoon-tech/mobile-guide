@@ -5,550 +5,146 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0d4f9c" />
   <title>죽산중고등학교 모바일 무선가이드</title>
-
   <script>
+    // A page's role is fixed by its URL, never by a query parameter.
     const guideHostPage = /^\/host(?:\.html)?\/?$/.test(location.pathname);
     document.documentElement.dataset.role = guideHostPage ? 'host' : 'listener';
   </script>
-
   <style>
-    :root {
-      --blue:#0d4f9c;
-      --blue2:#1b74d1;
-      --line:#dbe5f0;
-      --text:#152235;
-      --sub:#66778c;
-      --green:#19a66a;
-      --red:#e54b55;
-      --shadow:0 16px 50px rgba(16,58,105,.12);
-    }
-
+    :root { --blue:#0d4f9c; --blue2:#1b74d1; --bg:#f3f7fc; --card:#fff; --line:#dbe5f0; --text:#152235; --sub:#66778c; --green:#19a66a; --red:#e54b55; --shadow:0 16px 50px rgba(16,58,105,.12); }
     * { box-sizing:border-box; }
-
-    html,body {
-      margin:0;
-      min-height:100%;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--text);
-      background:linear-gradient(180deg,#eaf3ff 0,#f7f9fc 42%,#eef3f8 100%);
-    }
-
-    .wrap {
-      max-width:650px;
-      margin:0 auto;
-      padding:20px 16px 44px;
-    }
-
-    .brand {
-      display:grid;
-      grid-template-columns:clamp(44px,12vw,64px) minmax(0,1fr) clamp(44px,12vw,64px);
-      gap:8px;
-      align-items:center;
-      padding:10px 0 22px;
-    }
-
-    .brandLogo {
-      display:block;
-      width:100%;
-      height:64px;
-      object-fit:contain;
-    }
-
-    .brandText {
-      min-width:0;
-      text-align:center;
-    }
-
-    h1 {
-      margin:0;
-      font-size:clamp(17px,3.8vw,27px);
-      line-height:1.35;
-      letter-spacing:-.03em;
-    }
-
-    .brandTitle { display:block; }
-
-    .brandGuide {
-      display:block;
-      font-size:.85em;
-      margin-top:4px;
-    }
-
-    .subtitle {
-      margin-top:5px;
-      color:var(--sub);
-      font-size:clamp(11px,2.6vw,14px);
-      line-height:1.5;
-    }
-
-    .card {
-      background:rgba(255,255,255,.96);
-      border:1px solid var(--line);
-      border-radius:24px;
-      padding:20px;
-      box-shadow:var(--shadow);
-      margin-bottom:16px;
-    }
-
+    html,body { margin:0; min-height:100%; font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--text); background:linear-gradient(180deg,#eaf3ff 0,#f7f9fc 42%,#eef3f8 100%); }
+    .wrap { max-width:650px; margin:0 auto; padding:20px 16px 44px; }
+    .brand { display:grid; grid-template-columns:clamp(44px,12vw,64px) minmax(0,1fr) clamp(44px,12vw,64px); align-items:center; gap:8px; width:fit-content; max-width:100%; margin:0 auto; padding:10px 0 22px; }
+    .logoWrap { width:64px; height:64px; border-radius:50%; background:#fff; box-shadow:0 8px 28px rgba(13,79,156,.16); display:grid; place-items:center; overflow:hidden; border:1px solid #dbe8f5; flex:none; }
+    .logoWrap img { width:100%; height:100%; object-fit:contain; padding:5px; }
+    .logoFallback { font-weight:900; color:var(--blue); font-size:18px; }
+    h1 { margin:0; font-size:clamp(20px,5vw,27px); letter-spacing:-.03em; }
+    .subtitle { margin-top:5px; color:var(--sub); font-size:14px; }
+    .card { background:rgba(255,255,255,.96); border:1px solid var(--line); border-radius:24px; padding:20px; box-shadow:var(--shadow); margin-bottom:16px; }
     .row { display:flex; gap:10px; flex-wrap:wrap; }
     .row > * { flex:1; min-width:0; }
-
-    label {
-      display:block;
-      font-size:13px;
-      color:var(--sub);
-      margin:0 0 7px;
-      font-weight:700;
-    }
-
-    input {
-      width:100%;
-      border:1px solid #cbd9e8;
-      background:#f8fbff;
-      color:var(--text);
-      padding:14px;
-      border-radius:14px;
-      font-size:18px;
-      text-transform:uppercase;
-      letter-spacing:.12em;
-      outline:none;
-    }
-
-    input:focus,textarea:focus {
-      border-color:var(--blue2);
-      box-shadow:0 0 0 4px rgba(27,116,209,.10);
-    }
-
-    button {
-      appearance:none;
-      border:0;
-      border-radius:15px;
-      padding:15px 16px;
-      font-weight:800;
-      font-size:16px;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:8px;
-    }
-
-    button.primary {
-      background:linear-gradient(135deg,var(--blue),var(--blue2));
-      color:#fff;
-    }
-
-    button.secondary {
-      background:#edf4fb;
-      color:#24415f;
-      border:1px solid #d2e0ee;
-    }
-
-    button.good {
-      background:#e7f8f0;
-      color:#087847;
-      border:1px solid #bfe9d5;
-    }
-
+    label { display:block; font-size:13px; color:var(--sub); margin:0 0 7px; font-weight:700; }
+    input { width:100%; border:1px solid #cbd9e8; background:#f8fbff; color:var(--text); padding:14px; border-radius:14px; font-size:18px; text-transform:uppercase; letter-spacing:.12em; outline:none; }
+    input:focus { border-color:var(--blue2); box-shadow:0 0 0 4px rgba(27,116,209,.10); }
+    button { appearance:none; border:0; border-radius:15px; padding:15px 16px; font-weight:800; font-size:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; }
+    button.primary { background:linear-gradient(135deg,var(--blue),var(--blue2)); color:#fff; }
+    button.secondary { background:#edf4fb; color:#24415f; border:1px solid #d2e0ee; }
+    button.good { background:#e7f8f0; color:#087847; border:1px solid #bfe9d5; }
     button.danger { background:var(--red); color:#fff; }
     button:disabled { opacity:.45; cursor:not-allowed; }
-
-    .status {
-      display:flex;
-      align-items:center;
-      gap:9px;
-      padding:12px 14px;
-      border-radius:14px;
-      background:#f7faff;
-      border:1px solid var(--line);
-      margin:12px 0;
-      color:var(--sub);
-    }
-
-    .dot {
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:#8a9caf;
-      flex:none;
-    }
-
-    .dot.live {
-      background:var(--red);
-      box-shadow:0 0 0 6px rgba(229,75,85,.12);
-    }
-
-    .dot.ok {
-      background:var(--green);
-      box-shadow:0 0 0 6px rgba(25,166,106,.10);
-    }
-
-    .big {
-      font-size:40px;
-      font-weight:900;
-      letter-spacing:.08em;
-      text-align:center;
-      margin:10px 0 2px;
-      color:var(--blue);
-    }
-
+    .status { display:flex; align-items:center; gap:9px; padding:12px 14px; border-radius:14px; background:#f7faff; border:1px solid var(--line); margin:12px 0; color:var(--sub); }
+    .dot { width:10px; height:10px; border-radius:50%; background:#8a9caf; flex:none; }
+    .dot.live { background:var(--red); box-shadow:0 0 0 6px rgba(229,75,85,.12); }
+    .dot.ok { background:var(--green); box-shadow:0 0 0 6px rgba(25,166,106,.10); }
+    .big { font-size:40px; font-weight:900; letter-spacing:.08em; text-align:center; margin:10px 0 2px; color:var(--blue); }
     .center { text-align:center; }
     .muted { color:var(--sub); font-size:14px; }
     .hidden { display:none !important; }
-
     html[data-role="listener"] #hostPanel,
-    html[data-role="host"] #listenerPanel {
-      display:none !important;
-    }
-
-    .entryTitle {
-      margin:0 0 16px;
-      font-size:20px;
-      color:var(--blue);
-    }
-
-    .meter {
-      height:10px;
-      background:#edf2f7;
-      border-radius:99px;
-      overflow:hidden;
-      border:1px solid var(--line);
-    }
-
-    .meter > div {
-      height:100%;
-      width:0%;
-      background:linear-gradient(90deg,#22b67a,#55d09b);
-      transition:width .08s linear;
-    }
-
-    .pill {
-      display:inline-block;
-      padding:7px 11px;
-      border-radius:999px;
-      background:#edf4fb;
-      border:1px solid #d4e1ef;
-      color:#365674;
-      font-size:13px;
-      font-weight:800;
-    }
-
-    .counts {
-      display:flex;
-      gap:8px;
-      justify-content:center;
-      margin-top:12px;
-      flex-wrap:wrap;
-    }
-
-    .countChip {
-      border:1px solid #d7e3ef;
-      border-radius:999px;
-      padding:7px 11px;
-      background:#f8fbff;
-      color:#52677d;
-      font-size:13px;
-    }
-
-    .notice {
-      margin-top:12px;
-      padding:12px 13px;
-      border-radius:14px;
-      background:#fff9e9;
-      border:1px solid #f2df9e;
-      color:#735d11;
-      font-size:13px;
-      line-height:1.5;
-    }
-
-    .footer {
-      margin-top:18px;
-      color:#7d8ca0;
-      font-size:12px;
-      line-height:1.55;
-      text-align:center;
-    }
-
-    .wakeActive {
-      background:#e7f8f0 !important;
-      color:#087847 !important;
-      border-color:#bfe9d5 !important;
-    }
-
+    html[data-role="host"] #listenerPanel { display:none !important; }
+    .entryTitle { margin:0 0 16px; font-size:20px; color:var(--blue); }
+    .meter { height:10px; background:#edf2f7; border-radius:99px; overflow:hidden; border:1px solid var(--line); }
+    .meter > div { height:100%; width:0%; background:linear-gradient(90deg,#22b67a,#55d09b); transition:width .08s linear; }
+    .pill { display:inline-block; padding:7px 11px; border-radius:999px; background:#edf4fb; border:1px solid #d4e1ef; color:#365674; font-size:13px; font-weight:800; }
+    .counts { display:flex; gap:8px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+    .countChip { border:1px solid #d7e3ef; border-radius:999px; padding:7px 11px; background:#f8fbff; color:#52677d; font-size:13px; }
+    .notice { margin-top:12px; padding:12px 13px; border-radius:14px; background:#fff9e9; border:1px solid #f2df9e; color:#735d11; font-size:13px; line-height:1.5; }
+    .footer { margin-top:18px; color:#7d8ca0; font-size:12px; line-height:1.55; text-align:center; }
+    .wakeActive { background:#e7f8f0 !important; color:#087847 !important; border-color:#bfe9d5 !important; }
     audio { width:100%; }
-
-    textarea {
-      width:100%;
-      min-height:96px;
-      resize:vertical;
-      border:1px solid #cbd9e8;
-      background:#f8fbff;
-      color:var(--text);
-      padding:13px 14px;
-      border-radius:14px;
-      font-size:16px;
-      line-height:1.5;
-      outline:none;
-      font-family:inherit;
-    }
-
-    .questionBox {
-      margin-top:18px;
-      padding-top:18px;
-      border-top:1px solid var(--line);
-    }
-
-    .questionTitle {
-      font-size:17px;
-      font-weight:900;
-      margin:0 0 10px;
-    }
-
-    .questionList {
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:12px;
-    }
-
-    .questionItem {
-      border:1px solid #d7e3ef;
-      background:#f8fbff;
-      border-radius:16px;
-      padding:13px 14px;
-    }
-
-    .questionItem.new {
-      border-color:#9bc7f5;
-      background:#f1f7ff;
-    }
-
-    .questionMeta {
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      color:var(--sub);
-      font-size:12px;
-      margin-bottom:6px;
-    }
-
-    .questionText {
-      font-size:15px;
-      line-height:1.5;
-      white-space:pre-wrap;
-      word-break:break-word;
-    }
-
-    .questionActions {
-      display:flex;
-      gap:8px;
-      margin-top:10px;
-    }
-
-    .questionActions button {
-      padding:8px 10px;
-      font-size:12px;
-      border-radius:10px;
-    }
-
-    .questionEmpty {
-      color:var(--sub);
-      font-size:13px;
-      text-align:center;
-      padding:12px 0 2px;
-    }
-
-    .sendNote {
-      margin-top:8px;
-      min-height:20px;
-      color:var(--green);
-      font-size:13px;
-      font-weight:700;
-    }
-
-    .fullWidth { width:100%; }
-    .space10 { height:10px; }
-    .space12 { height:12px; }
-    .space14 { height:14px; }
+    textarea { width:100%; min-height:96px; resize:vertical; border:1px solid #cbd9e8; background:#f8fbff; color:var(--text); padding:13px 14px; border-radius:14px; font-size:16px; line-height:1.5; outline:none; font-family:inherit; }
+    textarea:focus { border-color:var(--blue2); box-shadow:0 0 0 4px rgba(27,116,209,.10); }
+    .questionBox { margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
+    .questionTitle { font-size:17px; font-weight:900; margin:0 0 10px; }
+    .questionList { display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+    .questionItem { border:1px solid #d7e3ef; background:#f8fbff; border-radius:16px; padding:13px 14px; }
+    .questionItem.new { border-color:#9bc7f5; background:#f1f7ff; }
+    .questionMeta { display:flex; justify-content:space-between; gap:10px; color:var(--sub); font-size:12px; margin-bottom:6px; }
+    .questionText { font-size:15px; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+    .questionActions { display:flex; gap:8px; margin-top:10px; }
+    .questionActions button { padding:8px 10px; font-size:12px; border-radius:10px; }
+    .questionEmpty { color:var(--sub); font-size:13px; text-align:center; padding:12px 0 2px; }
+    .sendNote { margin-top:8px; min-height:20px; color:var(--green); font-size:13px; font-weight:700; }
   </style>
 </head>
-
 <body>
 <div class="wrap">
-
   <div class="brand">
-    <img
-      class="brandLogo"
-      src="/ib-logo.png"
-      alt="IB World School 마크"
-    />
-
-    <div class="brandText">
-      <h1>
-        <span class="brandTitle">죽산중고등학교</span>
-        <span class="brandGuide">모바일 무선가이드</span>
+    <img src="/ib-logo.png" alt="IB World School 마크" style="width:100%;height:64px;object-fit:contain;" />
+    <div style="min-width:0;text-align:center;">
+      <h1 style="margin:0;font-size:clamp(17px,3.8vw,27px);line-height:1.35;">
+        <span style="display:block;">죽산중고등학교</span>
+        <span style="display:block;font-size:.85em;margin-top:4px;">모바일 무선가이드</span>
       </h1>
-      <div class="subtitle">IB · 함께 질문하고 탐구하는 학교</div>
+      <div class="subtitle" style="font-size:clamp(11px,2.6vw,14px);line-height:1.5;">IB · 함께 질문하고 탐구하는 학교</div>
     </div>
-
-    <img
-      class="brandLogo"
-      src="/school-logo1.png"
-      alt="죽산중고등학교 마크"
-    />
+    <img src="/school-logo1.png" alt="죽산중고등학교 마크" style="width:100%;height:64px;object-fit:contain;" />
   </div>
+
+
 
   <div id="entry" class="card">
     <h2 id="entryTitle" class="entryTitle">청취자 입장</h2>
     <label for="room">방 코드</label>
-    <input
-      id="room"
-      maxlength="8"
-      placeholder="예: JIWS"
-      autocomplete="off"
-    />
-    <p id="entryError" role="alert" class="muted"></p>
-    <div class="space12"></div>
-    <button id="enter" class="primary fullWidth">입장하기</button>
+    <input id="room" maxlength="8" placeholder="예: JIWS" autocomplete="off" />
+    <p id="entryError" role="alert" class="muted"></p><div style="height:12px"></div>
+    <button id="enter" class="primary" style="width:100%">입장하기</button>
   </div>
 
   <div id="hostPanel" class="card hidden">
-    <div class="center">
-      <span class="pill">진행자 모드</span>
-    </div>
-
+    <div class="center"><span class="pill">진행자 모드</span></div>
     <div id="hostRoom" class="big"></div>
-    <div class="center muted">
-      같은 방 코드로 여러 진행자가 함께 들어올 수 있습니다.
-    </div>
-
-    <div id="hostStatus" class="status" role="status" aria-live="polite">
-      <span class="dot"></span>
-      <span>연결 준비 중</span>
-    </div>
-
-    <div class="meter">
-      <div id="meterBar"></div>
-    </div>
-
-    <div class="space14"></div>
-
+    <div class="center muted">같은 방 코드로 여러 진행자가 함께 들어올 수 있습니다.</div>
+    <div id="hostStatus" class="status" role="status" aria-live="polite"><span class="dot"></span><span>연결 준비 중</span></div>
+    <div class="meter"><div id="meterBar"></div></div>
+    <div style="height:14px"></div>
     <div class="row">
       <button id="startMic" class="primary">🎙️ 방송 시작</button>
       <button id="stopMic" class="danger" disabled>■ 방송 종료</button>
     </div>
-
-    <div class="space10"></div>
-
-    <button id="wakeBtn" class="secondary fullWidth">
-      ☀️ 화면 꺼짐 방지 켜기
-    </button>
-
+    <div style="height:10px"></div>
+    <button id="wakeBtn" class="secondary" style="width:100%">☀️ 화면 꺼짐 방지 켜기</button>
     <div class="counts">
       <span class="countChip">진행자 <b id="hostCount">0</b>명</span>
       <span class="countChip">청취자 <b id="listenerCount">0</b>명</span>
       <span class="countChip">질문 <b id="questionCount">0</b>개</span>
     </div>
-
     <div class="questionBox">
       <div class="questionTitle">💬 실시간 질문</div>
-      <div class="muted">
-        청취자가 보낸 질문이 이곳에 표시됩니다.
-      </div>
-      <div id="questionList" class="questionList">
-        <div id="questionEmpty" class="questionEmpty">
-          아직 질문이 없습니다.
-        </div>
-      </div>
+      <div class="muted">청취자가 보낸 질문이 이곳에 즉시 표시됩니다.</div>
+      <div id="questionList" class="questionList"><div id="questionEmpty" class="questionEmpty">아직 질문이 없습니다.</div></div>
     </div>
-
-    <div class="notice">
-      여러 진행자가 동시에 방송할 수 있습니다.
-      방송 중에는 이 화면을 열어두세요.
-      화면 꺼짐 방지는 지원 브라우저에서만 동작합니다.
-    </div>
+    <div class="notice">여러 진행자가 동시에 방송할 수 있습니다. 방송 중에는 이 화면을 열어두세요. 화면 꺼짐 방지는 지원 브라우저에서만 동작합니다.</div>
   </div>
 
   <div id="listenerPanel" class="card hidden">
-    <div class="center">
-      <span class="pill">청취자 모드</span>
-    </div>
-
+    <div class="center"><span class="pill">청취자 모드</span></div>
     <div id="listenerRoom" class="big"></div>
-
-    <div id="listenerStatus" class="status" role="status" aria-live="polite">
-      <span class="dot"></span>
-      <span>진행자를 기다리는 중</span>
-    </div>
-
-    <button id="enableAudio" class="primary fullWidth">▶ 소리 듣기</button>
-
-    <div id="audioContainer"></div>
-    <div id="speakerList" class="muted" style="margin-top:12px;"></div>
-
-    <button
-      id="listenerWake"
-      class="secondary fullWidth"
-      style="margin-top:12px;"
-    >
-      ☀️ 화면 꺼짐 방지 켜기
-    </button>
-
+    <div id="listenerStatus" class="status" role="status" aria-live="polite"><span class="dot"></span><span>진행자를 기다리는 중</span></div>
+    <button id="enableAudio" class="primary" style="width:100%">▶ 소리 듣기</button>
+    <div id="audioContainer"></div><div id="speakerList" class="muted" style="margin-top:12px"></div><button id="listenerWake" class="secondary" style="width:100%;margin-top:12px">☀️ 화면 꺼짐 방지 켜기</button>
     <div class="counts">
-      <span class="countChip">
-        진행자 <b id="listenerHostCount">0</b>명
-      </span>
-      <span class="countChip">
-        청취자 <b id="listenerListenerCount">0</b>명
-      </span>
+      <span class="countChip">진행자 <b id="listenerHostCount">0</b>명</span>
+      <span class="countChip">청취자 <b id="listenerListenerCount">0</b>명</span>
     </div>
-
     <div class="questionBox">
       <div class="questionTitle">💬 진행자에게 질문하기</div>
-
-      <label for="questionName">
-        이름 <span style="font-weight:500;">(선택)</span>
-      </label>
-
-      <input
-        id="questionName"
-        maxlength="20"
-        placeholder="익명으로 보내려면 비워두세요"
-        style="text-transform:none;letter-spacing:0;font-size:15px;"
-      />
-
-      <div class="space10"></div>
-
+      <label for="questionName">이름 <span style="font-weight:500">(선택)</span></label>
+      <input id="questionName" maxlength="20" placeholder="익명으로 보내려면 비워두세요" style="text-transform:none;letter-spacing:0;font-size:15px" />
+      <div style="height:10px"></div>
       <label for="questionText">질문</label>
-      <textarea
-        id="questionText"
-        maxlength="300"
-        placeholder="궁금한 내용을 적어주세요."
-      ></textarea>
-
-      <div class="space10"></div>
-
-      <button id="sendQuestion" class="secondary fullWidth">
-        💬 질문 보내기
-      </button>
+      <textarea id="questionText" maxlength="300" placeholder="궁금한 내용을 적어주세요."></textarea>
+      <div style="height:10px"></div>
+      <button id="sendQuestion" class="secondary" style="width:100%">💬 질문 보내기</button>
       <div id="questionSent" class="sendNote"></div>
     </div>
-
-    <div class="center muted" style="margin-top:12px;">
-      이어폰 사용을 권장합니다.
-      다른 앱으로 이동하거나 화면 잠금 시에는
-      휴대폰 OS 정책에 따라 재생이 제한될 수 있습니다.
-    </div>
+    <div class="center muted" style="margin-top:12px">이어폰 사용을 권장합니다. 다른 앱으로 이동하거나 화면 잠금 시에는 휴대폰 OS 정책에 따라 재생이 제한될 수 있습니다.</div>
   </div>
 
-  <button id="leave" class="secondary fullWidth hidden">나가기</button>
-
-  <div class="footer">
-    V6 · IB 모바일 가이드 · 실시간 질문 · 자동 재연결 ·
-    여러 진행자 · 화면 꺼짐 방지
-  </div>
+  <button id="leave" class="secondary hidden" style="width:100%">나가기</button><div class="footer">V6 · IB 모바일 가이드 · 실시간 질문 · 자동 재연결 · 여러 진행자 · 화면 꺼짐 방지</div>
 </div>
+<script defer src="/app.js"></script></body></html>
 
-<script defer src="/app.js"></script>
-</body>
-</html>
+
+
