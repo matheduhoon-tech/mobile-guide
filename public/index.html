@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0d4f9c" />
   <title>죽산중고등학교 모바일 무선가이드</title>
+  <script>
+    // A page's role is fixed by its URL, never by a query parameter.
+    const guideHostPage = /^\/host(?:\.html)?\/?$/.test(location.pathname);
+    document.documentElement.dataset.role = guideHostPage ? 'host' : 'listener';
+  </script>
   <style>
     :root { --blue:#0d4f9c; --blue2:#1b74d1; --bg:#f3f7fc; --card:#fff; --line:#dbe5f0; --text:#152235; --sub:#66778c; --green:#19a66a; --red:#e54b55; --shadow:0 16px 50px rgba(16,58,105,.12); }
     * { box-sizing:border-box; }
@@ -14,7 +19,7 @@
     .logoWrap { width:64px; height:64px; border-radius:50%; background:#fff; box-shadow:0 8px 28px rgba(13,79,156,.16); display:grid; place-items:center; overflow:hidden; border:1px solid #dbe8f5; flex:none; }
     .logoWrap img { width:100%; height:100%; object-fit:contain; padding:5px; }
     .logoFallback { font-weight:900; color:var(--blue); font-size:18px; }
-    h1 { margin:0; font-size:27px; letter-spacing:-.03em; }
+    h1 { margin:0; font-size:clamp(20px,5vw,27px); letter-spacing:-.03em; }
     .subtitle { margin-top:5px; color:var(--sub); font-size:14px; }
     .card { background:rgba(255,255,255,.96); border:1px solid var(--line); border-radius:24px; padding:20px; box-shadow:var(--shadow); margin-bottom:16px; }
     .row { display:flex; gap:10px; flex-wrap:wrap; }
@@ -36,6 +41,9 @@
     .center { text-align:center; }
     .muted { color:var(--sub); font-size:14px; }
     .hidden { display:none !important; }
+    html[data-role="listener"] #hostPanel,
+    html[data-role="host"] #listenerPanel { display:none !important; }
+    .entryTitle { margin:0 0 16px; font-size:20px; color:var(--blue); }
     .meter { height:10px; background:#edf2f7; border-radius:99px; overflow:hidden; border:1px solid var(--line); }
     .meter > div { height:100%; width:0%; background:linear-gradient(90deg,#22b67a,#55d09b); transition:width .08s linear; }
     .pill { display:inline-block; padding:7px 11px; border-radius:999px; background:#edf4fb; border:1px solid #d4e1ef; color:#365674; font-size:13px; font-weight:800; }
@@ -58,91 +66,26 @@
     .questionActions button { padding:8px 10px; font-size:12px; border-radius:10px; }
     .questionEmpty { color:var(--sub); font-size:13px; text-align:center; padding:12px 0 2px; }
     .sendNote { margin-top:8px; min-height:20px; color:var(--green); font-size:13px; font-weight:700; }
-  
-    /* V5 branding: school crest + title + IB logo */
-    .brandThree {
-      display:grid;
-      grid-template-columns:86px minmax(0,1fr) 86px;
-      align-items:center;
-      gap:14px;
-      padding:12px 2px 24px;
-    }
-    .brandText { text-align:center; min-width:0; }
-    .brandText h1 { margin:0; font-size:30px; line-height:1.12; letter-spacing:-.04em; }
-    .guideTitle { margin-top:4px; font-size:24px; line-height:1.16; font-weight:900; letter-spacing:-.035em; color:var(--text); }
-    .brandText .subtitle { margin-top:10px; font-size:14px; line-height:1.35; }
-    .sideLogo {
-      width:86px;
-      height:86px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:transparent;
-      border:0;
-      box-shadow:none;
-      overflow:visible;
-      flex:none;
-    }
-    .sideLogo img {
-      display:block;
-      max-width:100%;
-      max-height:100%;
-      width:auto;
-      height:auto;
-      object-fit:contain;
-      background:transparent;
-      border:0;
-      box-shadow:none;
-    }
-
-    .ibSide img { width:82px; height:82px; }
-    @media (max-width:520px) {
-      .wrap { padding-left:14px; padding-right:14px; }
-      .brandThree { grid-template-columns:68px minmax(0,1fr) 68px; gap:8px; }
-      .sideLogo { width:68px; height:68px; }
-      .ibSide img { width:66px; height:66px; }
-      .brandText h1 { font-size:24px; }
-      .guideTitle { font-size:20px; }
-      .brandText .subtitle { font-size:12px; }
-    }
-    @media (max-width:390px) {
-      .brandThree { grid-template-columns:58px minmax(0,1fr) 58px; gap:6px; }
-      .sideLogo { width:58px; height:58px; }
-      .ibSide img { width:56px; height:56px; }
-      .brandText h1 { font-size:22px; }
-      .guideTitle { font-size:18px; }
-      .brandText .subtitle { font-size:11px; }
-    }
-
   </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brand brandThree">
-    <div class="sideLogo schoolSide">
-      <img id="schoolLogo" src="school-logo.png" alt="죽산중고등학교 교표"
-           onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'" />
+  <div class="brand">
+    <div class="logoWrap">
+      <img id="schoolLogo" src="/school-logo.png" alt="죽산중고등학교 마크" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='block'" />
       <span id="logoFallback" class="logoFallback" style="display:none">죽산</span>
     </div>
-    <div class="brandText">
-      <h1>죽산중고등학교</h1>
-      <div class="guideTitle">모바일 무선 가이드</div>
-
-    </div>
-    <div class="sideLogo ibSide">
-      <img id="ibLogo" src="ib-logo.png" alt="IB World School" />
+    <div>
+      <h1><span style="display:block">죽산중고등학교</span><span style="display:block;font-size:.85em;margin-top:4px">모바일 무선가이드</span></h1>
+      <div class="subtitle">IB · 함께 질문하고 탐구하는 학교</div>
     </div>
   </div>
 
   <div id="entry" class="card">
-    <div class="row">
-      <button id="pickHost" class="secondary">🎙️ 진행자</button>
-      <button id="pickListener" class="primary">🎧 청취자</button>
-    </div>
-    <div style="height:16px"></div>
-    <label for="room">입장 코드</label>
-    <input id="room" maxlength="8" placeholder="예: JIWS1954" autocomplete="off" />
-    <div style="height:12px"></div>
+    <h2 id="entryTitle" class="entryTitle">청취자 입장</h2>
+    <label for="room">방 코드</label>
+    <input id="room" maxlength="8" placeholder="예: TOK2026" autocomplete="off" />
+    <div id="pinField" class="hidden" style="margin-top:12px"><label for="hostPin">진행자 PIN</label><input id="hostPin" type="password" autocomplete="off" maxlength="80" style="letter-spacing:0;text-transform:none" /></div><p id="entryError" role="alert" class="muted"></p><div style="height:12px"></div>
     <button id="enter" class="primary" style="width:100%">입장하기</button>
   </div>
 
@@ -150,7 +93,7 @@
     <div class="center"><span class="pill">진행자 모드</span></div>
     <div id="hostRoom" class="big"></div>
     <div class="center muted">같은 방 코드로 여러 진행자가 함께 들어올 수 있습니다.</div>
-    <div id="hostStatus" class="status"><span class="dot"></span><span>연결 준비 중</span></div>
+    <div id="hostStatus" class="status" role="status" aria-live="polite"><span class="dot"></span><span>연결 준비 중</span></div>
     <div class="meter"><div id="meterBar"></div></div>
     <div style="height:14px"></div>
     <div class="row">
@@ -169,15 +112,15 @@
       <div class="muted">청취자가 보낸 질문이 이곳에 즉시 표시됩니다.</div>
       <div id="questionList" class="questionList"><div id="questionEmpty" class="questionEmpty">아직 질문이 없습니다.</div></div>
     </div>
-    <div class="notice">진행자 여러 명이 동시에 말해도 청취자에게 각각의 음성이 함께 전달됩니다. 모든 사용자는 이어마이크 사용을 권장합니다. 화면 꺼짐 방지는 지원 브라우저에서만 동작합니다.</div>
+    <div class="notice">여러 진행자가 동시에 방송할 수 있습니다. 방송 중에는 이 화면을 열어두세요. 화면 꺼짐 방지는 지원 브라우저에서만 동작합니다.</div>
   </div>
 
   <div id="listenerPanel" class="card hidden">
     <div class="center"><span class="pill">청취자 모드</span></div>
     <div id="listenerRoom" class="big"></div>
-    <div id="listenerStatus" class="status"><span class="dot"></span><span>진행자를 기다리는 중</span></div>
+    <div id="listenerStatus" class="status" role="status" aria-live="polite"><span class="dot"></span><span>진행자를 기다리는 중</span></div>
     <button id="enableAudio" class="primary" style="width:100%">▶ 소리 듣기</button>
-    <div id="audioContainer"></div>
+    <div id="audioContainer"></div><div id="speakerList" class="muted" style="margin-top:12px"></div><button id="listenerWake" class="secondary" style="width:100%;margin-top:12px">☀️ 화면 꺼짐 방지 켜기</button>
     <div class="counts">
       <span class="countChip">진행자 <b id="listenerHostCount">0</b>명</span>
       <span class="countChip">청취자 <b id="listenerListenerCount">0</b>명</span>
@@ -196,333 +139,7 @@
     <div class="center muted" style="margin-top:12px">이어폰 사용을 권장합니다. 다른 앱으로 이동하거나 화면 잠금 시에는 휴대폰 OS 정책에 따라 재생이 제한될 수 있습니다.</div>
   </div>
 
-  <div class="footer">V4 · 진행자/청취자 주소 분리 / 다중 진행자 동시 음성 / 실시간 질문 / 자동 복구</div>
+  <button id="leave" class="secondary hidden" style="width:100%">나가기</button><div class="footer">V6 · IB 모바일 가이드 · 실시간 질문 · 자동 재연결 · 여러 진행자 · 화면 꺼짐 방지</div>
 </div>
-<script>
-(() => {
-  const $ = id => document.getElementById(id);
-  const qs = new URLSearchParams(location.search);
-  const pathRole = location.pathname.replace(/\/+$/, '') === '/host' ? 'host' :
-                   location.pathname.replace(/\/+$/, '') === '/listen' ? 'listener' : null;
-  let role = pathRole || (qs.get('role') === 'host' ? 'host' : 'listener');
-  let roomCode = (qs.get('room') || '').toUpperCase();
-  let ws, reconnectTimer = null, shouldReconnect = true;
-  let iceConfig = { iceServers: [{urls:'stun:stun.l.google.com:19302'}] };
-  let localStream = null;
-  const hostPeers = new Map();       // host: listenerId -> RTCPeerConnection
-  const listenerPeers = new Map();   // listener: hostId -> RTCPeerConnection
-  const remoteAudios = new Map();    // listener: hostId -> audio
-  const hostPendingIce = new Map();  // listenerId -> candidates waiting for remote description
-  const listenerPendingIce = new Map(); // hostId -> candidates waiting for remote description
-  const offerLocks = new Set();
-  let audioCtx, analyser, meterTimer, wakeLock = null;
-  let audioEnabled = false;
-  let questionSeq = 0;
-  const questions = new Map();
+<script defer src="/app.js"></script></body></html>
 
-  function addQuestion(msg) {
-    const id = msg.questionId || `q${Date.now()}-${++questionSeq}`;
-    if (questions.has(id)) return;
-    const item = { id, name: (msg.name || '익명').slice(0,20), text: (msg.text || '').slice(0,300), at: msg.at || Date.now() };
-    if (!item.text.trim()) return;
-    questions.set(id, item);
-    const empty = $('questionEmpty'); if (empty) empty.remove();
-    const box = document.createElement('div');
-    box.className = 'questionItem new'; box.dataset.questionId = id;
-    const meta = document.createElement('div'); meta.className = 'questionMeta';
-    const who = document.createElement('span'); who.textContent = `👤 ${item.name}`;
-    const time = document.createElement('span'); time.textContent = new Date(item.at).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
-    meta.append(who,time);
-    const text = document.createElement('div'); text.className = 'questionText'; text.textContent = item.text;
-    const actions = document.createElement('div'); actions.className = 'questionActions';
-    const done = document.createElement('button'); done.className = 'good'; done.textContent = '✓ 답변 완료';
-    done.onclick = () => { box.classList.remove('new'); box.style.opacity='.62'; done.disabled=true; done.textContent='답변 완료'; };
-    const remove = document.createElement('button'); remove.className='secondary'; remove.textContent='삭제';
-    remove.onclick = () => { questions.delete(id); box.remove(); $('questionCount').textContent = questions.size; if (!questions.size) $('questionList').innerHTML='<div id="questionEmpty" class="questionEmpty">아직 질문이 없습니다.</div>'; };
-    actions.append(done,remove); box.append(meta,text,actions); $('questionList').prepend(box);
-    $('questionCount').textContent = questions.size;
-    try { if (navigator.vibrate) navigator.vibrate(80); } catch {}
-  }
-
-  $('room').value = roomCode;
-  function setRole(r) {
-    role = r;
-    $('pickHost').className = r === 'host' ? 'primary' : 'secondary';
-    $('pickListener').className = r === 'listener' ? 'primary' : 'secondary';
-  }
-  setRole(role);
-  $('pickHost').onclick = () => setRole('host');
-  $('pickListener').onclick = () => setRole('listener');
-
-  // /host and /listen are true separate entry URLs. The root page keeps the old role chooser.
-  if (pathRole) {
-    $('pickHost').style.display = 'none';
-    $('pickListener').style.display = 'none';
-    const mode = document.createElement('div');
-    mode.className = 'center'; mode.style.marginBottom = '14px';
-    mode.innerHTML = `<span class="pill">${pathRole === 'host' ? '🎙️ 진행자 전용 접속' : '🎧 청취자 전용 접속'}</span>`;
-    $('entry').prepend(mode);
-  }
-
-  function setStatus(id, text, kind='') {
-    const box = $(id); box.querySelector('span:last-child').textContent = text;
-    box.querySelector('.dot').className = 'dot ' + kind;
-  }
-  function setCounts(hosts, listeners) {
-    $('hostCount').textContent = hosts ?? 0;
-    $('listenerCount').textContent = listeners ?? 0;
-    $('listenerHostCount').textContent = hosts ?? 0;
-    $('listenerListenerCount').textContent = listeners ?? 0;
-  }
-  async function loadConfig() {
-    try { const r = await fetch('/config', {cache:'no-store'}); iceConfig = await r.json(); } catch {}
-  }
-  function signal(obj) { if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj)); }
-
-  function clearPeerMaps() {
-    for (const pc of hostPeers.values()) try { pc.close(); } catch {}
-    hostPeers.clear(); hostPendingIce.clear(); offerLocks.clear();
-    for (const pc of listenerPeers.values()) try { pc.close(); } catch {}
-    listenerPeers.clear(); listenerPendingIce.clear();
-    for (const audio of remoteAudios.values()) try { audio.remove(); } catch {}
-    remoteAudios.clear();
-  }
-  function scheduleReconnect() {
-    if (!shouldReconnect || reconnectTimer) return;
-    reconnectTimer = setTimeout(() => { reconnectTimer = null; connectSignal(); }, 1200);
-  }
-  function connectSignal() {
-    if (!roomCode) return;
-    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    try { if (ws) ws.close(); } catch {}
-    ws = new WebSocket(`${proto}//${location.host}/signal`);
-    ws.onopen = () => {
-      signal({ type:'join', role, roomCode });
-      if (role === 'host') setStatus('hostStatus', localStream ? 'LIVE · 서버 재연결됨' : '서버 연결됨', localStream ? 'live' : 'ok');
-      else setStatus('listenerStatus','서버 연결됨 · 진행자 확인 중','ok');
-    };
-    ws.onclose = () => {
-      clearPeerMaps();
-      if (role === 'host') setStatus('hostStatus','서버 연결 끊김 · 자동 재연결 중');
-      else setStatus('listenerStatus','서버 연결 끊김 · 자동 재연결 중');
-      scheduleReconnect();
-    };
-    ws.onerror = () => {};
-    ws.onmessage = async (e) => {
-      const msg = JSON.parse(e.data);
-      if (msg.type === 'joined') {
-        setCounts(msg.hostCount, msg.listenerCount);
-        if (role === 'host') {
-          setStatus('hostStatus', localStream ? 'LIVE · 방송 중' : '마이크 대기 중', localStream ? 'live' : 'ok');
-          if (localStream) signal({type:'host-started'});
-        } else {
-          setStatus('listenerStatus', (msg.activeHostCount || 0) ? '진행자 연결 준비 중' : '진행자를 기다리는 중', (msg.activeHostCount || 0) ? 'ok' : '');
-        }
-      }
-      if (msg.type === 'room-counts') setCounts(msg.hostCount, msg.listenerCount);
-      if (role === 'host') await handleHostSignal(msg);
-      else await handleListenerSignal(msg);
-    };
-  }
-
-  async function flushHostIce(listenerId, pc) {
-    const list = hostPendingIce.get(listenerId) || [];
-    for (const c of list) try { await pc.addIceCandidate(c); } catch {}
-    hostPendingIce.delete(listenerId);
-  }
-  async function flushListenerIce(hostId, pc) {
-    const list = listenerPendingIce.get(hostId) || [];
-    for (const c of list) try { await pc.addIceCandidate(c); } catch {}
-    listenerPendingIce.delete(hostId);
-  }
-
-  async function makeHostPeer(listenerId) {
-    if (!localStream || offerLocks.has(listenerId)) return;
-    offerLocks.add(listenerId);
-    try {
-      const old = hostPeers.get(listenerId); if (old) try { old.close(); } catch {}
-      const pc = new RTCPeerConnection(iceConfig);
-      hostPeers.set(listenerId, pc);
-      localStream.getAudioTracks().forEach(t => pc.addTrack(t, localStream));
-      pc.onicecandidate = e => e.candidate && signal({ type:'ice', targetId:listenerId, candidate:e.candidate });
-      pc.onconnectionstatechange = () => {
-        if (pc.connectionState === 'failed') {
-          hostPeers.delete(listenerId);
-          setTimeout(() => { if (localStream) makeHostPeer(listenerId); }, 800);
-        }
-        if (pc.connectionState === 'closed') hostPeers.delete(listenerId);
-      };
-      const offer = await pc.createOffer({ offerToReceiveAudio:false });
-      await pc.setLocalDescription(offer);
-      signal({ type:'offer', targetId:listenerId, sdp:pc.localDescription });
-    } finally { offerLocks.delete(listenerId); }
-  }
-
-  async function handleHostSignal(msg) {
-    if (msg.type === 'question') {
-      addQuestion(msg);
-    } else if (msg.type === 'listener-joined') {
-      if (localStream) await makeHostPeer(msg.listenerId);
-    } else if (msg.type === 'retry-host') {
-      if (localStream) await makeHostPeer(msg.fromId);
-    } else if (msg.type === 'listener-left') {
-      const pc = hostPeers.get(msg.listenerId); if (pc) pc.close(); hostPeers.delete(msg.listenerId); hostPendingIce.delete(msg.listenerId);
-    } else if (msg.type === 'answer') {
-      const pc = hostPeers.get(msg.fromId);
-      if (pc && msg.sdp) {
-        try { await pc.setRemoteDescription(msg.sdp); await flushHostIce(msg.fromId, pc); } catch {}
-      }
-    } else if (msg.type === 'ice') {
-      const pc = hostPeers.get(msg.fromId);
-      if (pc && pc.remoteDescription) {
-        if (msg.candidate) try { await pc.addIceCandidate(msg.candidate); } catch {}
-      } else if (msg.candidate) {
-        const list = hostPendingIce.get(msg.fromId) || []; list.push(msg.candidate); hostPendingIce.set(msg.fromId, list);
-      }
-    }
-  }
-
-  function getOrCreateAudio(hostId) {
-    if (remoteAudios.has(hostId)) return remoteAudios.get(hostId);
-    const audio = document.createElement('audio');
-    audio.autoplay = true; audio.playsInline = true; audio.controls = false;
-    audio.dataset.hostId = hostId;
-    $('audioContainer').appendChild(audio);
-    remoteAudios.set(hostId, audio);
-    return audio;
-  }
-  async function removeHost(hostId) {
-    const pc = listenerPeers.get(hostId); if (pc) try { pc.close(); } catch {}
-    listenerPeers.delete(hostId); listenerPendingIce.delete(hostId);
-    const audio = remoteAudios.get(hostId); if (audio) audio.remove(); remoteAudios.delete(hostId);
-    if (listenerPeers.size === 0) setStatus('listenerStatus','진행자를 기다리는 중');
-  }
-  async function handleListenerSignal(msg) {
-    if (msg.type === 'offer') {
-      const hostId = msg.fromId;
-      const old = listenerPeers.get(hostId); if (old) try { old.close(); } catch {}
-      const pc = new RTCPeerConnection(iceConfig);
-      listenerPeers.set(hostId, pc);
-      pc.onicecandidate = e => e.candidate && signal({ type:'ice', targetId:hostId, candidate:e.candidate });
-      pc.ontrack = async e => {
-        const audio = getOrCreateAudio(hostId);
-        audio.srcObject = e.streams[0];
-        if (audioEnabled) try { await audio.play(); } catch {}
-        setStatus('listenerStatus',`LIVE · 진행자 ${remoteAudios.size}명 음성 수신 중`,'live');
-      };
-      pc.onconnectionstatechange = () => {
-        if (pc.connectionState === 'connected') setStatus('listenerStatus',`LIVE · 진행자 ${remoteAudios.size || 1}명 연결됨`,'live');
-        if (pc.connectionState === 'failed') {
-          setStatus('listenerStatus','일부 음성 연결 재시도 중','ok');
-          signal({ type:'retry-host', targetId:hostId });
-        }
-      };
-      try {
-        await pc.setRemoteDescription(msg.sdp);
-        await flushListenerIce(hostId, pc);
-        const ans = await pc.createAnswer();
-        await pc.setLocalDescription(ans);
-        signal({ type:'answer', targetId:hostId, sdp:pc.localDescription });
-      } catch {}
-    } else if (msg.type === 'ice') {
-      const pc = listenerPeers.get(msg.fromId);
-      if (pc && pc.remoteDescription) {
-        if (msg.candidate) try { await pc.addIceCandidate(msg.candidate); } catch {}
-      } else if (msg.candidate) {
-        const list = listenerPendingIce.get(msg.fromId) || []; list.push(msg.candidate); listenerPendingIce.set(msg.fromId, list);
-      }
-    } else if (msg.type === 'host-left' || msg.type === 'host-stopped') {
-      await removeHost(msg.hostId);
-    } else if (msg.type === 'host-ready') {
-      setStatus('listenerStatus','새 진행자 연결 준비 중','ok');
-    }
-  }
-
-  async function startMeter(stream) {
-    try {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const src = audioCtx.createMediaStreamSource(stream);
-      analyser = audioCtx.createAnalyser(); analyser.fftSize = 256; src.connect(analyser);
-      const data = new Uint8Array(analyser.frequencyBinCount);
-      const tick = () => {
-        analyser.getByteFrequencyData(data);
-        const avg = data.reduce((a,b)=>a+b,0)/data.length;
-        $('meterBar').style.width = Math.min(100, avg * 1.8) + '%';
-        meterTimer = requestAnimationFrame(tick);
-      }; tick();
-    } catch {}
-  }
-  async function requestWakeLock() {
-    if (!('wakeLock' in navigator)) { alert('이 브라우저는 화면 꺼짐 방지 기능을 지원하지 않습니다.'); return; }
-    try {
-      wakeLock = await navigator.wakeLock.request('screen');
-      $('wakeBtn').textContent = '✅ 화면 꺼짐 방지 사용 중'; $('wakeBtn').classList.add('wakeActive');
-      wakeLock.addEventListener('release', () => {
-        wakeLock = null; $('wakeBtn').textContent = '☀️ 화면 꺼짐 방지 켜기'; $('wakeBtn').classList.remove('wakeActive');
-      });
-    } catch { alert('화면 꺼짐 방지를 켤 수 없습니다.'); }
-  }
-  $('wakeBtn').onclick = async () => { if (wakeLock) { try { await wakeLock.release(); } catch {} } else await requestWakeLock(); };
-  document.addEventListener('visibilitychange', async () => {
-    if (document.visibilityState === 'visible') {
-      if (role === 'host' && localStream && !wakeLock && 'wakeLock' in navigator) try { await requestWakeLock(); } catch {}
-      if (role === 'listener' && audioEnabled) for (const a of remoteAudios.values()) try { await a.play(); } catch {}
-    }
-  });
-
-  $('startMic').onclick = async () => {
-    try {
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation:true, noiseSuppression:true, autoGainControl:true }, video:false });
-      $('startMic').disabled = true; $('stopMic').disabled = false;
-      setStatus('hostStatus','LIVE · 방송 중','live'); startMeter(localStream);
-      signal({type:'host-started'});
-      if ('wakeLock' in navigator && !wakeLock) try { await requestWakeLock(); } catch {}
-    } catch (e) { alert('마이크 권한을 허용해주세요. (' + e.name + ')'); }
-  };
-  $('stopMic').onclick = () => {
-    signal({type:'host-stopped'});
-    if (localStream) localStream.getTracks().forEach(t => t.stop());
-    localStream = null;
-    for (const pc of hostPeers.values()) pc.close(); hostPeers.clear(); hostPendingIce.clear();
-    $('startMic').disabled = false; $('stopMic').disabled = true;
-    if (meterTimer) cancelAnimationFrame(meterTimer); $('meterBar').style.width='0%';
-    setStatus('hostStatus','방송 종료 · 다시 시작 가능','ok');
-  };
-
-  $('enableAudio').onclick = async () => {
-    audioEnabled = true;
-    try {
-      for (const audio of remoteAudios.values()) await audio.play();
-      $('enableAudio').textContent = '🔊 소리 재생 허용됨'; $('enableAudio').disabled = true;
-      if ('mediaSession' in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title:'죽산중고등학교 모바일 무선가이드', artist:'실시간 안내 방송' });
-    } catch { alert('브라우저에서 미디어 재생을 허용해주세요.'); }
-  };
-
-  $('sendQuestion').onclick = () => {
-    const text = $('questionText').value.trim(); const name = $('questionName').value.trim();
-    if (!text) return alert('질문 내용을 입력해주세요.');
-    if (!ws || ws.readyState !== WebSocket.OPEN) return alert('서버에 연결된 뒤 다시 보내주세요.');
-    const questionId = `q-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
-    signal({ type:'question', questionId, name: name || '익명', text, at:Date.now() });
-    $('questionText').value = ''; $('questionSent').textContent = '✅ 질문을 진행자에게 보냈습니다.';
-    setTimeout(() => { if ($('questionSent')) $('questionSent').textContent=''; }, 2600);
-  };
-
-  $('enter').onclick = async () => {
-    roomCode = $('room').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,8);
-    if (!roomCode) return alert('입장 코드를 입력해주세요.');
-    await loadConfig(); $('entry').classList.add('hidden');
-    if (role === 'host') { $('hostPanel').classList.remove('hidden'); $('hostRoom').textContent = roomCode; }
-    else { $('listenerPanel').classList.remove('hidden'); $('listenerRoom').textContent = roomCode; }
-    const base = role === 'host' ? '/host' : '/listen';
-    history.replaceState(null,'',`${base}?room=${encodeURIComponent(roomCode)}`);
-    connectSignal();
-  };
-
-  window.addEventListener('online', scheduleReconnect);
-  window.addEventListener('beforeunload', () => { shouldReconnect = false; });
-  if (roomCode) $('enter').click();
-})();
-</script>
-</body>
-</html>

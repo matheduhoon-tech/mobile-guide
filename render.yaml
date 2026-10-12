@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: mobile-guide
+    runtime: node
+    plan: starter
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    healthCheckPath: /health
+    disk:
+      name: mobile-guide-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: DATA_DIR
+        value: /var/data/mobile-guide
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: LIVEKIT_URL
+        sync: false
+      - key: LIVEKIT_API_KEY
+        sync: false
+      - key: LIVEKIT_API_SECRET
+        sync: false
+      - key: ROOM_CODE
+        sync: false
+      - key: HOST_PIN
+        sync: false
