@@ -7,14 +7,13 @@ const { randomUUID, createHmac, timingSafeEqual } = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 
+const validCode = code => typeof code === 'string' && /^[A-Z0-9]{1,8}$/.test(code);
 function createApp(env = process.env) {
-  for (const key of ['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET','SESSION_SECRET','ROOM_CODE']) {
+  for (const key of ['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET','SESSION_SECRET']) {
     if (!env[key]) throw new Error(`${key} 환경변수를 설정하세요.`);
   }
   if (!/^wss:\/\//.test(env.LIVEKIT_URL)) throw new Error('LIVEKIT_URL은 wss:// 주소여야 합니다.');
   if (env.SESSION_SECRET.length < 32) throw new Error('SESSION_SECRET은 32자 이상이어야 합니다.');
-  const roomCode = env.ROOM_CODE.toUpperCase();
-  if (!/^[A-Z0-9]{1,8}$/.test(roomCode)) throw new Error('ROOM_CODE: 영문/숫자 1~8자');
   const app = express();
   // Render has one reverse proxy. Do not use trust proxy=true.
   app.set('trust proxy', 1);
@@ -42,7 +41,7 @@ function createApp(env = process.env) {
       const [body,sig,...rest] = (req.headers.authorization || '').replace(/^Bearer /,'').split('.');
       if (rest.length || !body || !sig || !equal(sign(body),sig)) throw new Error();
       const user=JSON.parse(Buffer.from(body,'base64url').toString());
-      if (user.exp < Date.now() || user.room!==roomCode || !['host','listener'].includes(user.role)) throw new Error();
+      if (user.exp < Date.now() || !validCode(user.room) || !['host','listener'].includes(user.role)) throw new Error();
       req.user=user; next();
     } catch { res.status(401).json({message:'입장 인증이 만료되었습니다. 다시 입장해주세요.'}); }
   }
@@ -51,8 +50,9 @@ function createApp(env = process.env) {
   app.use('/api/join',rateLimit({windowMs:60000,limit:240,standardHeaders:'draft-8',legacyHeaders:false,message:{message:'잠시 후 다시 입장해주세요.'}}));
   app.post('/api/join',(req,res) => {
     const {code,role}=req.body || {};
-    if (!['host','listener'].includes(role) || !equal(String(code||'').trim().toUpperCase(),roomCode)) {
-      return res.status(403).json({message:'입장 코드를 확인해주세요.'});
+    const roomCode = typeof code === 'string' ? code.trim().toUpperCase() : ''; 
+    if (!['host','listener'].includes(role) || !validCode(roomCode)) {
+      return res.status(403).json({message:'입장 코드는 영문·숫자 1~8자로 입력해주세요.'});
     }
     const user={room:roomCode,role,identity:`${role}-${randomUUID()}`,exp:Date.now()+12*3600000};
     res.json({session:session(user),identity:user.identity,expiresAt:user.exp});
