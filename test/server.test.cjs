@@ -6,7 +6,7 @@ const os=require('node:os');
 const path=require('node:path');
 const {createApp}=require('../server');
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'guide-v6-test-'));
-const env={LIVEKIT_URL:'wss://test.livekit.cloud',LIVEKIT_API_KEY:'testkey',LIVEKIT_API_SECRET:'testsecret-which-is-long-enough',SESSION_SECRET:'session-secret-with-at-least-32-characters',ROOM_CODE:'TOK2026',HOST_PIN:'246810',DATA_DIR:temp};
+const env={LIVEKIT_URL:'wss://test.livekit.cloud',LIVEKIT_API_KEY:'testkey',LIVEKIT_API_SECRET:'testsecret-which-is-long-enough',SESSION_SECRET:'session-secret-with-at-least-32-characters',ROOM_CODE:'TOK2026',DATA_DIR:temp};
 let service=createApp(env);
 let server=service.app.listen(0,'127.0.0.1');
 const base=()=>`http://127.0.0.1:${server.address().port}`;
@@ -23,9 +23,10 @@ test('V6 authentication, SFU grants, 32-person admission, question isolation and
     assert.equal((await request('/health')).data.media,'LiveKit SFU');
     assert.equal((await fetch(base()+'/signal')).status,404);
   });
-  await t.test('entry code and host PIN reject invalid roles and credentials',async()=>{
+  await t.test('entry code rejects invalid rooms and roles; hosts enter without a PIN',async()=>{
     assert.equal((await join('listener','WRONG')).status,403);
-    assert.equal((await join('host','TOK2026','wrong')).status,403);
+    assert.equal((await request('/api/join','POST',{code:'TOK2026',role:'host'})).status,200);
+    assert.equal((await join('host','WRONG')).status,403);
     assert.equal((await join('admin')).status,403);
   });
   const host1=(await join('host')).data.session,host2=(await join('host')).data.session;
@@ -74,4 +75,5 @@ test('V6 authentication, SFU grants, 32-person admission, question isolation and
     assert.equal((await request('/api/questions','POST',{id:require('node:crypto').randomUUID(),text:'제한 확인'},sessions[0])).status,429);
   });
 });
+
 

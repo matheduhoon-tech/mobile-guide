@@ -8,7 +8,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 function createApp(env = process.env) {
-  for (const key of ['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET','SESSION_SECRET','ROOM_CODE','HOST_PIN']) {
+  for (const key of ['LIVEKIT_URL','LIVEKIT_API_KEY','LIVEKIT_API_SECRET','SESSION_SECRET','ROOM_CODE']) {
     if (!env[key]) throw new Error(`${key} 환경변수를 설정하세요.`);
   }
   if (!/^wss:\/\//.test(env.LIVEKIT_URL)) throw new Error('LIVEKIT_URL은 wss:// 주소여야 합니다.');
@@ -50,9 +50,9 @@ function createApp(env = process.env) {
   // Enough capacity for 32+ phones on the same school Wi-Fi/NAT.
   app.use('/api/join',rateLimit({windowMs:60000,limit:240,standardHeaders:'draft-8',legacyHeaders:false,message:{message:'잠시 후 다시 입장해주세요.'}}));
   app.post('/api/join',(req,res) => {
-    const {code,role,pin}=req.body || {};
-    if (!['host','listener'].includes(role) || !equal(String(code||'').trim().toUpperCase(),roomCode) || (role==='host' && !equal(pin||'',env.HOST_PIN))) {
-      return res.status(403).json({message:'입장 코드 또는 진행자 PIN을 확인해주세요.'});
+    const {code,role}=req.body || {};
+    if (!['host','listener'].includes(role) || !equal(String(code||'').trim().toUpperCase(),roomCode)) {
+      return res.status(403).json({message:'입장 코드를 확인해주세요.'});
     }
     const user={room:roomCode,role,identity:`${role}-${randomUUID()}`,exp:Date.now()+12*3600000};
     res.json({session:session(user),identity:user.identity,expiresAt:user.exp});
@@ -107,4 +107,5 @@ if(require.main===module) {
   process.on('SIGTERM',shutdown);process.on('SIGINT',shutdown);
 }
 module.exports={createApp};
+
 

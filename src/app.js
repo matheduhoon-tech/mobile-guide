@@ -186,16 +186,16 @@ $('sendQuestion').onclick=async()=>{
   finally{$('sendQuestion').disabled=false;}
 };
 $('entryTitle').textContent=isHost?'진행자 입장':'청취자 입장';
-$('pinField').classList.toggle('hidden',!isHost);
+
 $('room').value=(new URLSearchParams(location.search).get('room')||'').toUpperCase().slice(0,8);
 const sync=document.createElement('p');sync.id='questionSync';sync.className='muted';$('questionList').before(sync);
 $('enter').onclick=async()=>{
   $('enter').disabled=true;$('entryError').textContent='';
   try {
     roomCode=$('room').value.trim().toUpperCase();
-    const result=await api('/api/join','POST',{code:roomCode,role,pin:$('hostPin').value});
+    const result=await api('/api/join','POST',{code:roomCode,role});
     session=result.session;stopped=false;attempt=0;
-    $('hostPin').value='';$('entry').classList.add('hidden');$(isHost?'hostPanel':'listenerPanel').classList.remove('hidden');
+    $('entry').classList.add('hidden');$(isHost?'hostPanel':'listenerPanel').classList.remove('hidden');
     $(isHost?'hostRoom':'listenerRoom').textContent=roomCode;$('leave').classList.remove('hidden');
     history.replaceState(null,'',`${isHost?'/host':'/listen'}?room=${encodeURIComponent(roomCode)}`);
     await connectRoom();
@@ -213,6 +213,7 @@ document.addEventListener('visibilitychange',()=>{
 });
 window.addEventListener('pagehide',()=>{stopped=true;room?.disconnect();});
 window.addEventListener('pageshow',event=>{if(event.persisted)location.reload();});
+
 
 
 

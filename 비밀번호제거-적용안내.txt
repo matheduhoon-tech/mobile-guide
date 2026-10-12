@@ -1,0 +1,17 @@
+진행자 비밀번호 제거 수정본
+
+진행자 /host와 청취자 /listen 모두 기존 ROOM_CODE만 입력해 입장합니다.
+진행자 PIN 입력칸과 서버의 HOST_PIN 검사/필수 설정을 제거했습니다.
+입장 코드를 아는 사람이 /host에 접속하면 방송할 수 있습니다.
+
+적용 방법
+1. ZIP을 풀고 mobile-guide-v6-no-pin 폴더 안의 server.js, src, public, test를 GitHub 저장소 최상위에 드래그해 업로드합니다.
+2. Commit changes로 저장합니다. 기존 경로의 파일이 교체됩니다.
+3. Render에서 Manual Deploy → Deploy latest commit을 실행합니다.
+4. Live 상태가 되면 /host 화면을 새로고침합니다. 진행자 PIN 칸이 없어야 합니다.
+5. 기존 ROOM_CODE와 LiveKit 설정, Build/Start Command는 그대로 사용합니다.
+6. Render의 HOST_PIN 변수는 남아 있어도 사용되지 않습니다. 삭제할 경우 수정본 배포 성공 후 삭제하고 Save only로 저장합니다.
+
+이 ZIP은 전체 신규 배포본이 아니라, 이미 배포한 V6에 덮어쓰는 수정본입니다.
+배포안내.md와 README.md의 이전 HOST_PIN 관련 설명은 이 수정본 적용 후 해당되지 않습니다.
+서버 테스트 8개 통과. 실제 휴대폰 음성은 재배포 후 확인하세요.
